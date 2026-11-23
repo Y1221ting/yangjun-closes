@@ -1,0 +1,251 @@
+/* 搭配页顶部：基准模特卡片与暖色衣帽间舞台。 */
+
+.model-hero {
+  position: relative;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: var(--space-3);
+  margin: 0 var(--space-4) var(--space-2);
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--paper-white);
+  box-shadow: var(--shadow-card);
+}
+
+.model-hero[hidden] {
+  display: none;
+}
+
+/* 卡片左上角的一小段和纸胶带 */
+.model-hero::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 26px;
+  width: 70px;
+  height: 15px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--tape) 0 7px,
+      rgba(224, 204, 171, 0.5) 7px 14px
+    );
+  box-shadow: 0 1px 3px rgba(120, 90, 55, 0.1);
+  transform: rotate(-2deg);
+  pointer-events: none;
+}
+
+/* 卡片右下角露出一点枫叶 */
+.model-hero::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  width: 74px;
+  height: 64px;
+  background: url("/assets/decor/maple-right.webp") center / contain no-repeat;
+  opacity: 0.18;
+  transform: rotate(-8deg);
+  pointer-events: none;
+}
+
+.model-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      ellipse at 50% 34%,
+      rgba(255, 252, 244, 0.98) 0%,
+      rgba(255, 252, 244, 0) 58%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.06) 0 1px,
+      transparent 1px 42px
+    ),
+    linear-gradient(
+      180deg,
+      #efe3cf 0%,
+      #ead7bb 68%,
+      #d4b58a 68%,
+      #c09a66 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(120, 90, 55, 0.12),
+    inset 0 -24px 36px rgba(120, 90, 55, 0.08);
+  isolation: isolate;
+}
+
+/* 墙与地板的分界线 */
+.model-stage::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 32%;
+  height: 1px;
+  background: rgba(120, 90, 55, 0.16);
+  z-index: 0;
+}
+
+/* 模特脚底的柔和阴影 */
+.model-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 46%;
+  height: 16px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(80, 50, 25, 0.24) 0%,
+    rgba(80, 50, 25, 0) 70%
+  );
+  filter: blur(2px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.model-view {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 4px 8px 2px;
+}
+
+.model-view[hidden] {
+  display: none;
+}
+
+/* 模特卡片里的模特比普通旋转视图稍微大一点 */
+.model-view .rotate-view__img {
+  max-height: 88%;
+}
+
+.model-view .rotate-view__hint {
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 253, 247, 0.72);
+  font-size: 10px;
+  color: rgba(74, 53, 38, 0.68);
+}
+
+.model-view .rotate-view__dot {
+  background: rgba(120, 90, 55, 0.3);
+}
+
+.model-view .rotate-view__dot.is-active {
+  background: var(--accent);
+}
+
+.model-empty {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  text-align: center;
+}
+
+.model-empty[hidden] {
+  display: none;
+}
+
+.model-empty__title {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  color: var(--text);
+}
+
+.model-empty__text {
+  font-size: var(--font-size-xs);
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.model-info {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 8px;
+}
+
+.model-info__eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--text-faint);
+}
+
+.model-info__title {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: #4a3222;
+}
+
+.model-info__text {
+  max-width: 520px;
+  font-size: var(--font-size-sm);
+  line-height: 1.9;
+  color: var(--text-muted);
+}
+
+.model-info__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.model-info__chips .chip {
+  display: inline-flex;
+  align-items: center;
+  cursor: default;
+}
+
+.model-info__soon {
+  padding-bottom: 2px;
+  border-bottom: 1px dashed var(--border-strong);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.model-info__note {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+@media (max-width: 1120px) {
+  .model-hero {
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: var(--space-2);
+  }
+
+  .model-info__title {
+    font-size: 26px;
+  }
+
+  .model-info__text {
+    font-size: var(--font-size-xs);
+  }
+}

@@ -1,0 +1,108 @@
+/* 基础样式：重置、排版、启动页。 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* hidden 属性优先于组件自身的 display 规则 */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  /* 米白纸张 + 极淡的双层点状纹理 */
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(rgba(120, 90, 55, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+  background-size: 19px 19px, 27px 27px;
+  background-position: 0 0, 10px 13px;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-md);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+::selection {
+  background: rgba(201, 120, 63, 0.22);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* ---------------------------------------------------------------- 启动页 */
+
+.boot {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.boot__mark {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  margin-bottom: var(--space-2);
+}
+
+.boot__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.boot__subtitle {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.boot__status {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  transition: color var(--duration) var(--ease);
+}
+
+.boot__status.is-ok {
+  color: var(--success);
+}
+
+.boot__status.is-error {
+  color: var(--danger);
+}

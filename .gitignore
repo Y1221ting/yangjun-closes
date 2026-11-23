@@ -1,0 +1,28 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# 打包产物
+build/
+dist/
+*.spec
+
+# 运行时数据（用户自己的衣服和数据库，不要提交）
+data/
+logs/
+
+# 用户生成的衣物图片（体积大且属于个人素材）
+衣服生成图/
+衣服设计图/
+修改/
+
+# 人体模特 / 试衣生成图（只提交提示词文档）
+avatar_base_*
+tryon_*
+
+# 系统文件
+.DS_Store
+Thumbs.db
+desktop.ini

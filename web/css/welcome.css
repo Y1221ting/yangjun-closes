@@ -1,0 +1,120 @@
+/* 启动欢迎页：整张花体图 + 纸张背景，淡出后进入衣柜。 */
+
+.welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(rgba(120, 90, 55, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
+  background-size: 19px 19px, 27px 27px;
+  background-position: 0 0, 10px 13px;
+  transition: opacity 520ms var(--ease);
+}
+
+.welcome.is-leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome::before,
+.welcome::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.welcome::before {
+  right: 7%;
+  top: 9%;
+  width: 92px;
+  height: 136px;
+  background-image: url("/assets/decor/euca-top.webp");
+  opacity: 0.55;
+  transform: rotate(7deg);
+}
+
+.welcome::after {
+  left: 6%;
+  bottom: 8%;
+  width: 132px;
+  height: 128px;
+  background-image: url("/assets/decor/branch-left.webp");
+  opacity: 0.45;
+  transform: rotate(-8deg);
+}
+
+.welcome__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.welcome__art {
+  display: block;
+  width: 560px;
+  max-width: 62vw;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 16px 26px rgba(110, 75, 40, 0.1));
+}
+
+.welcome__status {
+  margin-top: 8px;
+  font-family: var(--font-kai);
+  font-size: 13px;
+  letter-spacing: 6px;
+  color: var(--text-muted);
+  animation: welcome-breathe 2.2s ease-in-out infinite;
+}
+
+.welcome__skip {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-faint);
+}
+
+@keyframes welcome-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.no-welcome .welcome {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome {
+    transition-duration: 1ms;
+  }
+
+  .welcome__status {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .welcome__art {
+    max-width: 72vw;
+  }
+
+  .welcome__status {
+    letter-spacing: 4px;
+  }
+}

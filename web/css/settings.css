@@ -1,0 +1,136 @@
+/* 设置页：数据安全与回收站。 */
+
+.settings {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.settings__section {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--paper-white);
+  box-shadow: var(--shadow-card);
+}
+
+.settings__title {
+  margin-bottom: 8px;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.settings__text {
+  font-size: var(--font-size-sm);
+  line-height: 1.9;
+  color: var(--text-muted);
+}
+
+.settings__subtitle {
+  margin-top: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.settings__count {
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.settings__empty {
+  padding: 8px 0;
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+}
+
+.settings__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 0 8px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.settings__toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- 回收站列表 */
+
+.trash-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.trash-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+}
+
+.trash-row__thumb {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.trash-row__thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.trash-row__empty {
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+.trash-row__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.trash-row__name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.trash-row__meta {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+}
+
+.trash-row__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.trash-row__actions .btn {
+  height: 30px;
+  padding: 0 12px;
+  font-size: var(--font-size-xs);
+}

@@ -1,0 +1,344 @@
+/* 搭配库与搭配编辑画布。 */
+
+/* ---------------------------------------------------------------- 搭配库 */
+
+.outfit-card .card__media {
+  position: relative;
+  padding: 14px;
+}
+
+.outfit-mini {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 260ms var(--ease);
+}
+
+.outfit-mini__item {
+  position: absolute;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.outfit-card:hover .outfit-mini {
+  transform: scale(1.03);
+}
+
+.outfit-worn-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.outfit-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 5;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+
+/* ---------------------------------------------------------------- 上身展示 */
+
+.worn-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+  overflow: hidden;
+}
+
+.worn-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.worn-stage .rotate-view {
+  width: 100%;
+  height: 100%;
+}
+
+.worn-empty {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.worn-empty[hidden] {
+  display: none;
+}
+
+.worn-empty__title {
+  margin-bottom: 8px;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  color: var(--text);
+}
+
+.worn-empty__text {
+  font-size: var(--font-size-sm);
+  line-height: 1.9;
+}
+
+.worn-panel {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow-y: auto;
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--border);
+}
+
+@media (max-width: 1180px) {
+  .worn-layout {
+    grid-template-columns: minmax(0, 1fr) 270px;
+  }
+}
+
+/* ---------------------------------------------------------------- 编辑器布局 */
+
+.editor {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 280px;
+  gap: var(--space-2);
+  padding: 0 var(--space-4) var(--space-3);
+  overflow: hidden;
+}
+
+.editor__drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding-right: var(--space-2);
+  border-right: 1px solid var(--border);
+}
+
+.editor__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editor-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 6px;
+  border: 0;
+  border-radius: var(--radius-btn);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease);
+}
+
+.editor-item:hover {
+  background: var(--surface-hover);
+}
+
+.editor-item__thumb {
+  flex: 0 0 auto;
+  width: 38px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.editor-item__thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.editor-item__name {
+  font-size: var(--font-size-xs);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ---------------------------------------------------------------- 画布 */
+
+.editor__stage {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  place-items: center;
+}
+
+.canvas-viewport {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.canvas {
+  position: relative;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  touch-action: none;
+}
+
+.canvas-item {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  will-change: left, top, width, transform;
+}
+
+.canvas-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.canvas-item.is-selected {
+  outline: 1.5px dashed var(--text-muted);
+  outline-offset: 4px;
+}
+
+.canvas-item.is-dragging {
+  cursor: grabbing;
+}
+
+/* ---------------------------------------------------------------- 右侧面板 */
+
+.editor__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  overflow-y: auto;
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--border);
+}
+
+.panel__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.panel__section[hidden] {
+  display: none;
+}
+
+.panel__title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.panel__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.panel__row > span {
+  flex: 0 0 auto;
+  width: 32px;
+}
+
+.panel__row input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--text);
+  cursor: pointer;
+}
+
+.panel__row em {
+  flex: 0 0 auto;
+  width: 44px;
+  font-style: normal;
+  text-align: right;
+  color: var(--text);
+}
+
+.panel__buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.panel__buttons .btn {
+  height: 30px;
+  padding: 0 6px;
+  font-size: var(--font-size-xs);
+}
+
+.panel__hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+  line-height: 1.9;
+}
+
+/* ---------------------------------------------------------------- 顶部 */
+
+.input--title {
+  height: auto;
+  padding: 2px 6px;
+  border-color: transparent;
+  background: transparent;
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.input--title:hover {
+  border-color: var(--border);
+}
+
+.input--title:focus {
+  border-color: var(--text);
+}
+
+.save-status {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  min-width: 48px;
+  text-align: right;
+}
+
+@media (max-width: 1180px) {
+  .editor {
+    grid-template-columns: 180px minmax(0, 1fr) 240px;
+  }
+}

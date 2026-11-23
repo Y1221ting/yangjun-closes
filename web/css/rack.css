@@ -1,0 +1,1070 @@
+/* 衣柜挂杆视图：分类杆、衣架、侧面挂件、鞋包隔板。 */
+
+.rack-hint {
+  padding: 0 var(--space-4) var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+}
+
+.rack {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0 var(--space-4) var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 38%),
+    linear-gradient(180deg, #faf6ef 0%, #f4ecdf 100%);
+  box-shadow:
+    0 10px 26px rgba(120, 90, 55, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.rack[hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- 分区 */
+
+.rack-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rack-section__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 8px;
+}
+
+.rack-section__label {
+  font-family: var(--font-kai);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #6b4a2f;
+}
+
+.rack-section__count {
+  font-size: var(--font-size-xs);
+  color: var(--text-faint);
+}
+
+.rack-section__body {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+}
+
+.rack-scroll {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.rack-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.rack-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+.rack-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rack-track {
+  position: relative;
+  width: max-content;
+  min-width: 100%;
+  padding: 0 10px 10px;
+}
+
+/* 挂杆：木纹 + 两端端头 */
+.rack-bar {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.09) 0 2px,
+      rgba(86, 58, 28, 0.05) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #c9a678 0%, #a87f52 55%, #8a6339 100%);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.rack-bar::before,
+.rack-bar::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 12px;
+  height: 13px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #b08a5c, #7d5a33);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.rack-bar::before {
+  left: -4px;
+}
+
+.rack-bar::after {
+  right: -4px;
+}
+
+.rack-items {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+/* ---------------------------------------------------------------- 挂件 */
+
+.rack-item {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 150px;
+  height: 330px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+
+.rack-item.is-dragging {
+  opacity: 0.55;
+}
+
+.rack-item.is-dragging .rack-item__garment {
+  transform: translateX(-50%) scale(1.05);
+  transition: none;
+}
+
+body.is-racking {
+  cursor: grabbing;
+}
+
+body.is-racking .rack-item {
+  cursor: grabbing;
+}
+
+.rack-item:hover,
+.rack-item:focus-visible {
+  z-index: 6;
+}
+
+.rack-item:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.rack-item__hanger {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 56px;
+  height: 42px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.rack-item__hanger svg {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #a99a83;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.rack-item__garment {
+  position: absolute;
+  /* 比衣架三角底部略高，让肩膀压住衣架，看起来是挂着的 */
+  top: 38px;
+  left: 50%;
+  width: 140px;
+  height: 210px;
+  transform: translateX(-50%);
+  transform-origin: top center;
+  perspective: 900px;
+  transition: transform 260ms var(--ease);
+  will-change: transform;
+}
+
+/* 悬停时整体放大，正面不会比侧面小 */
+.rack-item:hover .rack-item__garment,
+.rack-item:focus-visible .rack-item__garment {
+  transform: translateX(-50%) scale(1.15);
+}
+
+.rack-item__garment img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform-origin: top center;
+  transition: opacity 260ms var(--ease), transform 260ms var(--ease),
+              filter 260ms var(--ease);
+  will-change: transform, opacity, filter;
+}
+
+/* 正面浮起阴影，侧面不投影 */
+.rack-item__front {
+  filter: drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+}
+
+.rack-item:hover .rack-item__front,
+.rack-item:focus-visible .rack-item__front {
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.2));
+}
+
+.rack-item__side {
+  opacity: 1;
+  transform: rotateY(0deg);
+}
+
+.rack-item__front {
+  opacity: 0;
+  transform: rotateY(-75deg);
+}
+
+.rack-item:hover .rack-item__side,
+.rack-item:focus-visible .rack-item__side {
+  opacity: 0;
+  transform: rotateY(75deg);
+}
+
+.rack-item:hover .rack-item__front,
+.rack-item:focus-visible .rack-item__front {
+  opacity: 1;
+  transform: rotateY(0deg);
+}
+
+.rack-item__name {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 28px;
+  font-size: var(--font-size-xs);
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rack-item__meta {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.rack-item:hover .rack-item__meta,
+.rack-item:focus-visible .rack-item__meta {
+  opacity: 1;
+  transform: none;
+}
+
+.rack-item__delete,
+.shelf-item__delete,
+.accessory-item__delete,
+.shoe-item__delete,
+.closet-item__delete {
+  position: absolute;
+  z-index: 3;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  opacity: 0;
+  box-shadow: var(--shadow-card);
+  transition: opacity var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+
+.rack-item__delete {
+  top: 36px;
+  right: 6px;
+}
+
+.rack-item:hover .rack-item__delete,
+.rack-item:focus-within .rack-item__delete,
+.shelf-item:hover .shelf-item__delete,
+.shelf-item:focus-within .shelf-item__delete,
+.accessory-item:hover .accessory-item__delete,
+.accessory-item:focus-within .accessory-item__delete,
+.shoe-item:hover .shoe-item__delete,
+.shoe-item:focus-within .shoe-item__delete,
+.closet-item:hover .closet-item__delete,
+.closet-item:focus-within .closet-item__delete {
+  opacity: 1;
+}
+
+.rack-item__delete:hover,
+.shelf-item__delete:hover,
+.accessory-item__delete:hover,
+.shoe-item__delete:hover,
+.closet-item__delete:hover {
+  color: var(--danger);
+}
+
+/* 左右滚动按钮 */
+.rack-nav {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 28px;
+  height: 48px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+
+.rack-nav:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- 鞋包隔板 */
+
+.shelf-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shelf {
+  position: relative;
+  padding: 0 10px 18px;
+}
+
+.shelf__items {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  /* 上下留出悬停抬起与阴影的空间，避免被滚动容器裁掉 */
+  padding: 12px 8px 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.shelf__items::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shelf__items::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+.shelf__line {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 8px;
+  height: 5px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.09) 0 2px,
+      rgba(86, 58, 28, 0.05) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #c9a678, #a87f52 55%, #8a6339);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.shelf-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: 130px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.shelf-item:hover,
+.shelf-item:focus-within {
+  z-index: 4;
+}
+
+.shelf-item:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.shelf-item img {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+  padding: 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  transform-origin: center bottom;
+  transition: transform 200ms var(--ease), box-shadow 200ms var(--ease),
+              background-color 200ms var(--ease);
+}
+
+/* 悬停时像把单品从隔板上轻轻拿起来 */
+.shelf-item:hover img,
+.shelf-item:focus-within img {
+  transform: translateY(-5px) scale(1.06);
+  background-color: #ffffff;
+  box-shadow: 0 14px 20px rgba(0, 0, 0, 0.16);
+}
+
+.shelf-item__name {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shelf-item__meta {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.shelf-item:hover .shelf-item__meta,
+.shelf-item:focus-within .shelf-item__meta {
+  opacity: 1;
+  transform: none;
+}
+
+.shelf-item__delete {
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+}
+
+.shelf-item__empty {
+  display: block;
+  height: 150px;
+  line-height: 150px;
+  color: var(--text-faint);
+  font-size: var(--font-size-xs);
+  background: var(--surface);
+  border-radius: 8px;
+}
+
+/* ---------------------------------------------------------------- 配饰收纳 */
+
+.accessory-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.accessory-row {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.accessory-row[hidden] {
+  display: none;
+}
+
+.accessory-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.accessory-row::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+.accessory-track {
+  position: relative;
+  display: flex;
+  width: max-content;
+  min-width: 100%;
+  padding: 8px 14px 6px;
+}
+
+.accessory-items {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* 挂杆 */
+.accessory-rod {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.12) 0 2px,
+      transparent 2px 5px
+    ),
+    linear-gradient(180deg, #e6d4b6 0%, #b99a6b 55%, #8f7047 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.accessory-rod::before,
+.accessory-rod::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle at 35% 30%, #f2e5cd, #b99a6b 60%, #8a6a42);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+}
+
+.accessory-rod::before {
+  left: -5px;
+}
+
+.accessory-rod::after {
+  right: -5px;
+}
+
+.accessory-row--hang .accessory-items {
+  padding-top: 26px;
+}
+
+/* 单品通用 */
+.accessory-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: 122px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.accessory-item:hover,
+.accessory-item:focus-within {
+  z-index: 4;
+}
+
+.accessory-item:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.accessory-img {
+  display: block;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.accessory-missing {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 120px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  color: var(--text-faint);
+  font-size: var(--font-size-xs);
+}
+
+/* 挂杆单品：小夹子 + 透明图片 */
+.accessory-item--hang {
+  padding-top: 6px;
+}
+
+.accessory-clip {
+  position: absolute;
+  top: -26px;
+  left: 50%;
+  width: 10px;
+  height: 32px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(120, 90, 50, 0.35);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #fbf7ef, #ddc9a8 60%, #c2a97f);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  z-index: 3;
+}
+
+.accessory-clip::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 6px;
+  height: 10px;
+  transform: translateX(-50%);
+  border: 2px solid #b99a6b;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+}
+
+.accessory-clip::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: rgba(120, 90, 50, 0.35);
+}
+
+.accessory-item--hang .accessory-img {
+  max-width: 122px;
+  max-height: 156px;
+  transform-origin: top center;
+  filter: drop-shadow(0 7px 9px rgba(0, 0, 0, 0.12));
+  transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.accessory-item--hang:hover .accessory-img,
+.accessory-item--hang:focus-within .accessory-img {
+  transform: rotate(-1.4deg) scale(1.04);
+  filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.18));
+}
+
+/* 纸袋 / 平放共用的下层隔板 */
+.accessory-track--shelf {
+  padding-top: 18px;
+  padding-bottom: 8px;
+}
+
+.accessory-shelf-line {
+  position: absolute;
+  top: 130px;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.09) 0 2px,
+      rgba(86, 58, 28, 0.05) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #c9a678, #a87f52 55%, #8a6339);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* 纸袋单品 */
+.accessory-bag {
+  position: relative;
+  width: 100px;
+  height: 112px;
+  display: flex;
+  justify-content: center;
+  transition: transform 220ms var(--ease);
+}
+
+.accessory-bag .accessory-img {
+  position: absolute;
+  bottom: 6px;
+  max-width: 92px;
+  max-height: 100px;
+  z-index: 1;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.12));
+  transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.accessory-bag__front {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 58px;
+  border-radius: 3px 3px 9px 9px;
+  z-index: 2;
+  transform-origin: bottom center;
+  transition: opacity 220ms var(--ease), transform 220ms var(--ease);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.16),
+      transparent 32%,
+      transparent 68%,
+      rgba(0, 0, 0, 0.06)
+    ),
+    linear-gradient(180deg, #ddc49b, #c6a572 60%, #ad8a5a);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 2px 4px rgba(0, 0, 0, 0.12);
+}
+
+.accessory-bag__front::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: -2px;
+  right: -2px;
+  height: 14px;
+  border-radius: 5px 5px 7px 7px;
+  background: linear-gradient(180deg, #e9d3ac, #cfaf7f 70%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transform: rotate(-0.8deg);
+}
+
+.accessory-bag__front::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 9px;
+  height: 1px;
+  background: rgba(120, 90, 50, 0.12);
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.accessory-item--bag:hover .accessory-bag,
+.accessory-item--bag:focus-within .accessory-bag {
+  transform: translateY(-4px);
+}
+
+/* 悬停时袋口向下让开，完整单品升到袋子上方 */
+.accessory-item--bag:hover .accessory-bag__front,
+.accessory-item--bag:focus-within .accessory-bag__front {
+  opacity: 0.12;
+  transform: translateY(12px) scaleY(0.88);
+}
+
+.accessory-item--bag:hover .accessory-img,
+.accessory-item--bag:focus-within .accessory-img {
+  transform: translateY(-10px) scale(1.08);
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.16));
+  z-index: 3;
+}
+
+/* 平放单品 */
+.accessory-flat {
+  width: 122px;
+  height: 112px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.accessory-flat .accessory-img {
+  max-width: 114px;
+  max-height: 104px;
+  transform: rotate(-2deg);
+  transform-origin: center bottom;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.12));
+  transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.accessory-item--flat:hover .accessory-flat .accessory-img,
+.accessory-item--flat:focus-within .accessory-flat .accessory-img {
+  transform: rotate(0deg) translateY(-5px) scale(1.03);
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.16));
+}
+
+/* 常驻小标签 */
+.accessory-tag {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 3px 7px 3px 15px;
+  border-radius: 3px;
+  background: #fffdf6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  font-size: 11px;
+  line-height: 15px;
+  text-align: left;
+  transform: rotate(-1deg);
+}
+
+.accessory-tag::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #d8c6a8;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+
+.accessory-tag__name {
+  display: -webkit-box;
+  overflow: hidden;
+  line-height: 14px;
+  white-space: normal;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.accessory-tag__meta {
+  display: block;
+  font-size: 9px;
+  line-height: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+}
+
+.accessory-item:hover .accessory-tag__meta,
+.accessory-item:focus-within .accessory-tag__meta {
+  opacity: 1;
+}
+
+/* 删除按钮 */
+.accessory-item__delete {
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+}
+
+/* ---------------------------------------------------------------- 鞋柜 */
+
+.shoe-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shoe-rack {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.shoe-rack::-webkit-scrollbar {
+  height: 6px;
+}
+
+.shoe-rack::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 3px;
+}
+
+.shoe-track {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: max-content;
+  min-width: 100%;
+  padding: 34px 16px 14px;
+}
+
+.shoe-shelf {
+  position: relative;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.shoe-shelf[hidden],
+.shoe-board[hidden] {
+  display: none;
+}
+
+.shoe-items {
+  display: flex;
+  align-items: flex-end;
+  gap: 26px;
+  padding-bottom: 8px;
+}
+
+.shoe-board {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.09) 0 2px,
+      rgba(86, 58, 28, 0.05) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #c9a678, #a87f52 55%, #8a6339);
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.shoe-board--top {
+  top: 178px;
+}
+
+.shoe-board--bottom {
+  top: 342px;
+}
+
+.shoe-item {
+  position: relative;
+  flex: 0 0 auto;
+  width: 160px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.shoe-item:hover,
+.shoe-item:focus-within {
+  z-index: 4;
+}
+
+.shoe-item:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+.shoe-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 150px;
+  max-height: 120px;
+  object-fit: contain;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 7px 9px rgba(0, 0, 0, 0.12));
+  transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+
+.shoe-item:hover .shoe-img,
+.shoe-item:focus-within .shoe-img {
+  transform: translateY(-6px) scale(1.04);
+  filter: drop-shadow(0 12px 14px rgba(0, 0, 0, 0.18));
+}
+
+.shoe-missing {
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 96px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  color: var(--text-faint);
+  font-size: var(--font-size-xs);
+}
+
+.shoe-tag {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  max-width: 230px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 253, 246, 0.96);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  font-size: 11px;
+  line-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  pointer-events: none;
+  transition: opacity 180ms var(--ease), transform 180ms var(--ease);
+  z-index: 5;
+}
+
+.shoe-item:hover .shoe-tag,
+.shoe-item:focus-within .shoe-tag {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.shoe-item__delete {
+  top: 0;
+  right: 0;
+  width: 22px;
+  height: 22px;
+  font-size: 10px;
+}

@@ -1,0 +1,380 @@
+/* 页面框架：侧边栏 + 主内容区。 */
+
+.app {
+  display: flex;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------- 侧边栏 */
+
+.sidebar {
+  width: 236px;
+  flex: 0 0 236px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px dashed var(--border-strong);
+  background: var(--sidebar-bg);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar__brand {
+  padding: 14px 12px 2px;
+  text-align: center;
+}
+
+.sidebar__logo {
+  display: block;
+  width: 196px;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 3px 5px rgba(90, 60, 30, 0.08));
+}
+
+.sidebar__nav {
+  display: flex;
+  gap: 6px;
+  padding: 10px 14px 12px;
+}
+
+.nav-item {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 7px 4px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.nav-item:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.nav-item.is-active {
+  background: var(--paper-white);
+  border-color: var(--border);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.nav-item:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.nav-item__soon {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+  color: var(--text-faint);
+}
+
+/* 衣橱目录：类别 + 数量 */
+
+.sidebar__catalog {
+  min-height: 0;
+  padding: 0 10px;
+}
+
+.sidebar__heading {
+  padding: 2px 12px 6px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  color: var(--text-faint);
+}
+
+.sidebar__heading::after {
+  content: "";
+  display: inline-block;
+  width: 34px;
+  height: 1px;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, var(--border-strong), transparent);
+}
+
+.catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.catalog-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease), color var(--duration) var(--ease);
+}
+
+.catalog-item:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.catalog-item.is-active {
+  background: var(--paper-white);
+  border-color: var(--border);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-card);
+}
+
+.catalog-item__leaf {
+  flex: 0 0 16px;
+  width: 16px;
+  height: 10px;
+  margin-right: 4px;
+  object-fit: contain;
+  opacity: 0;
+  transform: rotate(-4deg);
+  transition: opacity var(--duration) var(--ease);
+}
+
+.catalog-item.is-active .catalog-item__leaf {
+  opacity: 1;
+}
+
+.catalog-item__name {
+  flex: 1;
+}
+
+.catalog-item__count {
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-faint);
+}
+
+.catalog-item.is-active .catalog-item__count {
+  color: var(--text-muted);
+}
+
+.sidebar__foot {
+  position: relative;
+  min-height: 96px;
+  margin-top: auto;
+  padding: 16px 18px 12px;
+  overflow: hidden;
+}
+
+/* 侧栏底部露出的尤加利枝，像夹在手账里的干花 */
+.sidebar__foot::after {
+  content: "";
+  position: absolute;
+  right: -18px;
+  bottom: -8px;
+  width: 118px;
+  height: 112px;
+  background: url("/assets/decor/branch-left.webp") right bottom / contain no-repeat;
+  opacity: 0.3;
+  transform: rotate(-6deg);
+  pointer-events: none;
+}
+
+.sidebar__hint {
+  position: relative;
+  z-index: 1;
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--text-faint);
+}
+
+/* 不在衣柜页时，拖动提示也跟着目录一起隐藏 */
+.sidebar__catalog[hidden] ~ .sidebar__foot .sidebar__hint {
+  display: none;
+}
+
+.sidebar__foot #app-version {
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------------- 主区域 */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page[hidden] {
+  display: none;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+
+.topbar--wardrobe {
+  align-items: center;
+  padding: 16px 28px 12px;
+}
+
+.topbar__heading {
+  min-width: 0;
+}
+
+.topbar__title {
+  font-family: var(--font-serif);
+  font-size: 27px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: #4a3222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__sub {
+  margin-top: 2px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.topbar__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.topbar--wardrobe .input--search {
+  width: 240px;
+  min-width: 150px;
+  flex: 0 1 240px;
+}
+
+/* 筛选弹层 */
+
+.filter-wrap {
+  position: relative;
+}
+
+.filter-toggle.is-active {
+  border-color: var(--border-strong);
+  background: var(--paper-white);
+  color: var(--accent);
+}
+
+.filter-toggle__count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.filter-pop {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 30;
+  width: 280px;
+  padding: 18px 16px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--paper-white);
+  box-shadow: var(--shadow-float);
+}
+
+/* 弹层顶部的一小段和纸胶带 */
+.filter-pop::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: 22px;
+  width: 62px;
+  height: 15px;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--tape) 0 7px,
+      rgba(224, 204, 171, 0.5) 7px 14px
+    );
+  box-shadow: 0 1px 3px rgba(120, 90, 55, 0.1);
+  transform: rotate(-2.5deg);
+  pointer-events: none;
+}
+
+.filter-pop__field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.filter-pop__field .select {
+  flex: 1;
+  max-width: 180px;
+  height: 32px;
+}
+
+.filter-pop__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.filter-pop__foot #btn-clear-filters {
+  margin-right: auto;
+}
+
+.filter-pop__foot .btn {
+  height: 32px;
+}
