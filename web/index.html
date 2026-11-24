@@ -3,18 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>yt的衣柜</title>
+  <title>Yelena 的衣柜</title>
   <script>
-    /* 用户关掉欢迎页时，首帧就直接隐藏，避免闪一下 */
+    /* 用户关掉等待封面时，首帧就直接隐藏，避免闪一下。
+       cookie 不区分端口，随机端口启动也能记住开关。 */
     try {
-      if (localStorage.getItem('yt-welcome') === 'off') {
+      const cookieOff = document.cookie.split('; ').some(
+        (part) => part === 'yelena-welcome=off'
+      );
+      if (cookieOff || localStorage.getItem('yelena-welcome') === 'off') {
         document.documentElement.classList.add('no-welcome');
       }
     } catch (err) {
-      /* localStorage 不可用时保持默认显示 */
+      /* 存储不可用时保持默认显示 */
     }
   </script>
   <link rel="icon" href="/assets/icon.png">
+  <link rel="preload" as="image" href="/assets/hero.webp">
   <link rel="stylesheet" href="/css/variables.css">
   <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/layout.css">
@@ -26,21 +31,49 @@
   <link rel="stylesheet" href="/css/detail.css">
   <link rel="stylesheet" href="/css/outfit.css">
   <link rel="stylesheet" href="/css/model.css">
+  <link rel="stylesheet" href="/css/theme-yelena.css">
   <link rel="stylesheet" href="/css/welcome.css">
 </head>
 <body>
-  <div class="welcome" id="welcome" role="status" aria-label="正在打开 yt 的衣柜">
-    <div class="welcome__inner">
-      <img class="welcome__art" src="/assets/yt-brand.webp" alt="yt的衣柜">
-      <p class="welcome__status">正在打开你的衣柜</p>
+  <div class="sky-decor" aria-hidden="true">
+    <span class="sky-planet"></span>
+    <span class="sky-star sky-star--1">✦</span>
+    <span class="sky-star sky-star--2">✦</span>
+    <span class="sky-moon">☾</span>
+    <span class="sky-heart">♥</span>
+    <span class="sky-flower">✿</span>
+    <span class="sky-music">♪</span>
+  </div>
+
+  <div class="splash" id="splash" role="status" aria-label="正在打开 Yelena 的衣柜">
+    <div class="splash__backdrop" aria-hidden="true"></div>
+    <div class="splash__stage">
+      <div class="splash__lqip" aria-hidden="true"></div>
+      <img class="splash__art" id="splash-art" src="/assets/hero.webp" alt="">
+      <div class="splash__layer splash__layer--title" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r1" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r2" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r3" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r4" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r5" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r6" aria-hidden="true"></div>
+      <div class="splash__layer splash__layer--r7" aria-hidden="true"></div>
+      <div class="splash__glow" aria-hidden="true"></div>
+
+      <div class="splash__loading">
+        <div class="splash__pill">
+          <p class="splash__text">正在掀开衣柜的小帘子…</p>
+          <div class="splash__track"><div class="splash__fill"></div></div>
+        </div>
+      </div>
     </div>
-    <p class="welcome__skip">点击任意处跳过</p>
+    <p class="splash__skip">点击任意处跳过</p>
   </div>
 
   <div class="app">
     <aside class="sidebar">
       <div class="sidebar__brand">
-        <img class="sidebar__logo" src="/assets/yt-brand.webp" alt="yt的衣柜">
+        <img class="sidebar__logo" src="/assets/logo.webp" alt="Yelena 的衣柜">
       </div>
       <nav class="sidebar__nav">
         <button class="nav-item is-active" type="button" id="nav-wardrobe">衣柜</button>
@@ -52,8 +85,12 @@
         <div class="catalog" id="category-filters"></div>
       </div>
       <div class="sidebar__foot">
-        <p class="sidebar__hint">按住衣服左右拖动可调整顺序<br>悬停查看正面</p>
+        <p class="sidebar__hint">拖动衣服调整顺序<br>悬停查看正面</p>
         <div id="app-version"></div>
+        <button class="mascot mascot--bench" type="button" data-mascot="bench"
+                aria-label="长椅宝宝" title="长椅宝宝">
+          <img src="/assets/characters/char2.webp" alt="" draggable="false">
+        </button>
       </div>
     </aside>
 
@@ -64,6 +101,12 @@
           <div class="topbar__heading">
             <h1 class="topbar__title">衣柜</h1>
             <p class="topbar__sub" id="wardrobe-count">正在加载…</p>
+          </div>
+          <div class="topbar__mascot-slot">
+            <button class="mascot mascot--camera" type="button" data-mascot="camera"
+                    aria-label="相机宝宝，点一下添加衣服" title="相机宝宝">
+              <img src="/assets/characters/char5.webp" alt="" draggable="false">
+            </button>
           </div>
           <div class="topbar__actions">
             <input id="search-input" class="input input--search" type="search"
@@ -101,9 +144,18 @@
           </div>
         </header>
 
+        <button class="mascot mascot--elf" type="button" data-mascot="elf"
+                aria-label="精灵宝宝" title="精灵宝宝">
+          <img src="/assets/characters/char4.webp" alt="" draggable="false">
+        </button>
+
         <section class="rack" id="wardrobe-rack"></section>
 
         <section class="empty" id="empty-state" hidden>
+          <button class="mascot mascot--bowl" type="button" data-mascot="bowl"
+                  aria-label="碗里宝宝" title="碗里宝宝">
+            <img src="/assets/characters/char3.webp" alt="" draggable="false">
+          </button>
           <p class="empty__title">衣柜还是空的</p>
           <p class="empty__text">
             把衣服拍成正面、侧面、背面三张透明背景图，<br>
@@ -113,6 +165,10 @@
         </section>
 
         <section class="empty" id="filter-empty" hidden>
+          <button class="mascot mascot--fly" type="button" data-mascot="fly"
+                  aria-label="飞行宝宝" title="飞行宝宝">
+            <img src="/assets/characters/char1.webp" alt="" draggable="false">
+          </button>
           <p class="empty__title">没有符合条件的衣服</p>
           <p class="empty__text">换个筛选条件试试。</p>
           <button class="btn btn--ghost" id="btn-clear-empty" type="button">清除筛选</button>
@@ -322,9 +378,21 @@
             <h2 class="settings__title">启动体验</h2>
             <label class="settings__toggle">
               <input type="checkbox" id="welcome-toggle">
-              <span>启动时显示欢迎页</span>
+              <span>启动时显示等待封面</span>
             </label>
-            <p class="settings__text">关掉后打开程序会直接进入衣柜，不再等待淡出。</p>
+            <p class="settings__text">关掉后打开程序会直接进入衣柜，不再等封面淡出。</p>
+          </section>
+
+          <section class="settings__section settings__section--appearance">
+            <h2 class="settings__title">外观</h2>
+            <p class="settings__text">
+              当前皮肤：蓝水彩 · 奶油面板。<br>
+              以后想换口味，可以在这里慢慢挑。
+            </p>
+            <button class="mascot mascot--spoon" type="button" data-mascot="spoon"
+                    aria-label="勺子宝宝" title="勺子宝宝">
+              <img src="/assets/characters/char6.webp" alt="" draggable="false">
+            </button>
           </section>
 
           <section class="settings__section">
@@ -470,6 +538,7 @@
 
   <script src="/js/api.js"></script>
   <script src="/js/ui.js"></script>
+  <script src="/js/mascots.js"></script>
   <script src="/js/nav.js"></script>
   <script src="/js/shortcuts.js"></script>
   <script src="/js/rotate-math.js"></script>

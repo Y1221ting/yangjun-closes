@@ -1,120 +1,251 @@
-/* 启动欢迎页：整张花体图 + 纸张背景，淡出后进入衣柜。 */
+/* 启动等待封面：蓝水彩插画满屏铺开，加载完淡出进入衣柜。
+ * 插画里的橙色标题保留，不再额外叠字。
+ */
 
-.welcome {
+.splash {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
   overflow: hidden;
-  background-color: var(--bg);
-  background-image:
-    radial-gradient(rgba(120, 90, 55, 0.035) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.45) 1px, transparent 1px);
-  background-size: 19px 19px, 27px 27px;
-  background-position: 0 0, 10px 13px;
-  transition: opacity 520ms var(--ease);
+  background: #cfe2f5;
+  transform-origin: center;
+  transition: opacity 650ms ease, transform 650ms ease;
 }
 
-.welcome.is-leaving {
+.splash.is-leaving {
   opacity: 0;
+  transform: scale(1.045);
   pointer-events: none;
 }
 
-.welcome::before,
-.welcome::after {
-  content: "";
+/* 小窗口改回完整的 16:9 安全区，上下用同一张模糊图补边 */
+.splash__backdrop {
   position: absolute;
-  pointer-events: none;
-  background-repeat: no-repeat;
-  background-size: contain;
+  inset: -18%;
+  background: #cfe2f5 url("/assets/hero_blur.webp") center / cover no-repeat;
+  filter: blur(20px) saturate(1.05);
 }
 
-.welcome::before {
-  right: 7%;
-  top: 9%;
-  width: 92px;
-  height: 136px;
-  background-image: url("/assets/decor/euca-top.webp");
-  opacity: 0.55;
-  transform: rotate(7deg);
+.splash__stage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100vw, calc(100vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.welcome::after {
-  left: 6%;
-  bottom: 8%;
-  width: 132px;
-  height: 128px;
-  background-image: url("/assets/decor/branch-left.webp");
-  opacity: 0.45;
-  transform: rotate(-8deg);
+/* LQIP：24px 微缩图，零请求，立即有画面 */
+.splash__lqip {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABIMDRANCxIQDhAUExIVGywdGxgYGzYnKSAsQDlEQz85Pj1HUGZXR0thTT0+WXlaYWltcnNyRVV9hnxvhWZwcm7/2wBDARMUFBsXGzQdHTRuST5Jbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubm7/wAARCAAOABgDASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAAQBAgb/xAAeEAACAgICAwAAAAAAAAAAAAABEQACITEDEgRCgf/EABYBAQEBAAAAAAAAAAAAAAAAAAIAAf/EABgRAAMBAQAAAAAAAAAAAAAAAAABERIh/9oADAMBAAIRAxEAPwDTkWOhCqaJHwxjmA6pbi9uKtasYwout8BEieuQnCX8XINT66hN1CzT/9k=");
+  background-size: 100% 100%;
+  filter: blur(5px) saturate(1.06);
+  transform: scale(1.01);
+  transition: opacity 550ms ease;
 }
 
-.welcome__inner {
-  position: relative;
+.splash.is-ready .splash__lqip {
+  opacity: 0;
+}
+
+/* 高清层：同一张原图复制 8 份，clip-path 各裁一块 */
+.splash__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0;
+  transition: opacity 550ms ease;
   z-index: 1;
-  text-align: center;
 }
 
-.welcome__art {
-  display: block;
-  width: 560px;
-  max-width: 62vw;
-  height: auto;
-  margin: 0 auto;
-  filter: drop-shadow(0 16px 26px rgba(110, 75, 40, 0.1));
+.splash__layer {
+  position: absolute;
+  inset: 0;
+  background-image: url("/assets/hero.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 550ms ease;
+  z-index: 2;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-.welcome__status {
-  margin-top: 8px;
-  font-family: var(--font-kai);
+.splash.is-ready .splash__art,
+.splash.is-ready .splash__layer {
+  opacity: 1;
+}
+
+.splash__layer--title {
+  clip-path: inset(15.93% 15.52% 60.00% 17.60%);
+  animation: splash-title-float 5.2s ease-in-out infinite;
+}
+
+@keyframes splash-title-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -4px, 0); }
+}
+
+.splash__layer--r1 { clip-path: inset(54.81% 68.91% 27.41% 22.81%); }
+.splash__layer--r2 { clip-path: inset(50.74% 61.41% 28.52% 31.30%); }
+.splash__layer--r3 { clip-path: inset(47.22% 53.54% 31.11% 39.01%); }
+.splash__layer--r4 { clip-path: inset(46.11% 45.68% 32.04% 46.88%); }
+.splash__layer--r5 { clip-path: inset(48.06% 37.14% 29.44% 54.95%); }
+.splash__layer--r6 { clip-path: inset(53.06% 29.95% 24.63% 64.22%); }
+.splash__layer--r7 { clip-path: inset(59.81% 21.77% 23.70% 69.79%); z-index: 3; }
+
+@keyframes splash-bob {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  35% { transform: translate3d(1px, -6px, 0); }
+  70% { transform: translate3d(-1px, -2px, 0); }
+}
+
+.splash__layer--r1 { animation: splash-bob 3.6s ease-in-out infinite; animation-delay: -0.2s; }
+.splash__layer--r2 { animation: splash-bob 4.1s ease-in-out infinite; animation-delay: -1.4s; }
+.splash__layer--r3 { animation: splash-bob 3.3s ease-in-out infinite; animation-delay: -2.6s; }
+.splash__layer--r4 { animation: splash-bob 4.4s ease-in-out infinite; animation-delay: -0.9s; }
+.splash__layer--r5 { animation: splash-bob 3.8s ease-in-out infinite; animation-delay: -2.1s; }
+.splash__layer--r6 { animation: splash-bob 4.6s ease-in-out infinite; animation-delay: -3.2s; }
+.splash__layer--r7 { animation: splash-bob 3.4s ease-in-out infinite; animation-delay: -1.8s; }
+
+.splash__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 64% 50% at 50% 30%,
+    rgba(255, 236, 190, 0.55),
+    transparent 64%
+  );
+  animation: splash-glow-pulse 7s ease-in-out infinite;
+}
+
+@keyframes splash-glow-pulse {
+  0%, 100% { opacity: 0.10; }
+  50% { opacity: 0.26; }
+}
+
+/* ── 加载文案 + 进度 ── */
+
+.splash__loading {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6%;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.splash__pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 24px 15px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 26px rgba(80, 130, 180, 0.16);
+}
+
+.splash__text {
   font-size: 13px;
-  letter-spacing: 6px;
-  color: var(--text-muted);
-  animation: welcome-breathe 2.2s ease-in-out infinite;
+  letter-spacing: 0.16em;
+  color: #2f5878;
+  animation: splash-breathe 2.4s ease-in-out infinite;
 }
 
-.welcome__skip {
+@keyframes splash-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.splash__track {
+  width: min(38vw, 240px);
+  height: 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.72);
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(110, 150, 195, 0.3);
+}
+
+.splash__fill {
+  width: 38%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #ffd782, #ffb454);
+  animation: splash-indeterminate 1.45s cubic-bezier(0.55, 0.1, 0.45, 0.9) infinite;
+}
+
+@keyframes splash-indeterminate {
+  0% { transform: translateX(-105%); }
+  100% { transform: translateX(300%); }
+}
+
+.splash__skip {
   position: absolute;
   left: 50%;
-  bottom: 34px;
+  bottom: 14px;
+  z-index: 7;
   transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(47, 88, 120, 0.66);
   font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--text-faint);
+  letter-spacing: 0.18em;
+  white-space: nowrap;
 }
 
-@keyframes welcome-breathe {
-  0%,
-  100% {
-    opacity: 0.55;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.no-welcome .welcome {
+.no-welcome .splash {
   display: none !important;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .welcome {
-    transition-duration: 1ms;
-  }
-
-  .welcome__status {
-    animation: none;
+/* 1024×700 这类小窗口：标题离边缘太近，改回完整 16:9 */
+@media (max-width: 1080px), (max-height: 740px) {
+  .splash__stage {
+    width: min(100vw, calc(100vh * 16 / 9));
   }
 }
 
 @media (max-width: 900px) {
-  .welcome__art {
-    max-width: 72vw;
+  .splash__text {
+    letter-spacing: 0.08em;
   }
 
-  .welcome__status {
-    letter-spacing: 4px;
+  .splash__pill {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash,
+  .splash__lqip,
+  .splash__art,
+  .splash__layer {
+    transition-duration: 1ms;
+  }
+
+  .splash__layer,
+  .splash__glow,
+  .splash__text,
+  .splash__fill {
+    animation: none;
   }
 }

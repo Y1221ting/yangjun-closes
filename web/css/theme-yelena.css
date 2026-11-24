@@ -1,0 +1,1107 @@
+/* Yelena 的衣柜 · 蓝水彩皮肤
+ *
+ * 只覆盖视觉：蓝水彩夜空、两块悬浮奶油面板、金色挂杆、
+ * 奶白衣帽柜 + 半透明淡蓝格背，以及七只可点的小人。
+ * 页面结构与功能逻辑仍由原来的 layout / rack / cabinet 负责。
+ */
+
+/* ---------------------------------------------------------------- 夜空背景 */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  background-color: #cfe2f5;
+  background-image: linear-gradient(180deg, #cfe2f5 0%, #e4f1fc 56%, #d4e7f9 100%);
+  color: var(--text);
+  overflow: hidden;
+}
+
+/* 和封面同一张插画，模糊后垫在下面，封面到主界面不断层 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -34px;
+  z-index: -3;
+  background: url("/assets/hero.webp") center / cover no-repeat;
+  filter: blur(12px) brightness(1.04) saturate(1.02);
+  opacity: 0.38;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 80% 62% at 50% 18%, rgba(255, 255, 255, 0.26), transparent 62%),
+    linear-gradient(180deg, rgba(207, 226, 245, 0.10), rgba(238, 246, 253, 0.22));
+  pointer-events: none;
+}
+
+/* 底部的月亮、星星和小花，只露在面板外的蓝色边距里 */
+.sky-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sky-planet {
+  position: absolute;
+  top: calc(100vh - 42px);
+  left: 50%;
+  width: 1000px;
+  height: 1000px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 34%,
+    #f7fbff 0%,
+    #e8f4fe 42%,
+    #d5e9fa 64%,
+    rgba(213, 233, 250, 0) 72%
+  );
+  box-shadow: inset 0 24px 50px rgba(255, 255, 255, 0.7);
+  opacity: 0.95;
+}
+
+.sky-decor span {
+  position: absolute;
+  line-height: 1;
+  text-shadow: 0 1px 4px rgba(120, 160, 200, 0.18);
+}
+
+.sky-star--1 { left: 42%; top: 3px; color: rgba(255, 255, 255, 0.95); font-size: 15px; }
+.sky-star--2 { right: 16%; top: 5px; color: #f6d38b; font-size: 11px; }
+.sky-moon { left: 5%; bottom: 12px; color: rgba(255, 255, 255, 0.95); font-size: 21px; }
+.sky-heart { right: 7%; bottom: 18px; color: #f3b7bd; font-size: 14px; }
+.sky-flower { left: 28%; bottom: 7px; color: #f0c3c8; font-size: 13px; }
+.sky-music { right: 28%; bottom: 5px; color: #9fc3e4; font-size: 14px; }
+
+/* ---------------------------------------------------------------- 外框 */
+
+.app {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 24px 24px 56px;
+  gap: 16px;
+}
+
+.sidebar {
+  width: 236px;
+  flex: 0 0 236px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-right: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.96), rgba(251, 244, 232, 0.94));
+  box-shadow:
+    0 22px 44px rgba(80, 120, 160, 0.20),
+    0 2px 8px rgba(80, 120, 160, 0.10),
+    inset 0 1px 0 #ffffff;
+  scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+.main {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.95), rgba(252, 246, 236, 0.93));
+  box-shadow:
+    0 24px 50px rgba(80, 120, 160, 0.22),
+    0 2px 8px rgba(80, 120, 160, 0.10),
+    inset 0 1px 0 #ffffff;
+  overflow: hidden;
+}
+
+.main::after {
+  content: "☾";
+  position: absolute;
+  left: 20px;
+  bottom: 4px;
+  z-index: 0;
+  color: rgba(240, 180, 95, 0.30);
+  font-size: 24px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- 侧栏 */
+
+.sidebar__brand {
+  padding: 20px 14px 4px;
+}
+
+.sidebar__logo {
+  width: 204px;
+  filter: drop-shadow(0 8px 14px rgba(176, 148, 96, 0.18));
+}
+
+.sidebar__nav {
+  padding: 12px 14px 14px;
+}
+
+.nav-item {
+  color: var(--text-muted);
+}
+
+.nav-item:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.nav-item.is-active {
+  background: #fffefa;
+  border-color: var(--border);
+  color: var(--accent);
+  box-shadow: 0 3px 8px rgba(80, 120, 160, 0.10);
+}
+
+.sidebar__heading {
+  color: var(--text-faint);
+}
+
+.sidebar__heading::after {
+  background: linear-gradient(90deg, var(--border-strong), transparent);
+}
+
+.catalog-item {
+  color: var(--text-muted);
+}
+
+.catalog-item:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.catalog-item.is-active {
+  background: #fffefa;
+  border-color: var(--border);
+  color: var(--accent);
+  box-shadow: 0 2px 6px rgba(80, 120, 160, 0.08);
+}
+
+/* 秋天的叶子换成一颗小金星 */
+.catalog-item__leaf {
+  display: none;
+}
+
+.catalog-item.is-active::before {
+  content: "✦";
+  margin-right: 6px;
+  color: #f0b45a;
+  font-size: 11px;
+  line-height: 1;
+}
+
+/* 侧栏底部：撤掉干花/小狗，只留长椅宝宝 */
+.sidebar__foot {
+  min-height: 136px;
+  padding: 16px 18px 12px;
+}
+
+.sidebar__foot::after {
+  content: none;
+}
+
+.sidebar__hint {
+  max-width: 120px;
+  color: var(--text-faint);
+}
+
+.sidebar__foot #app-version {
+  color: var(--text-faint);
+}
+
+.mascot--bench {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 108px;
+}
+
+/* ---------------------------------------------------------------- 顶栏 */
+
+.topbar--wardrobe {
+  padding: 18px 26px 10px;
+}
+
+.topbar__title {
+  font-family: var(--head-font);
+  font-size: 28px;
+  color: var(--heading-color);
+}
+
+.topbar__sub {
+  color: var(--text-muted);
+}
+
+/* 相机宝宝坐在标题和搜索之间的空位里 */
+.topbar__mascot-slot {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.topbar__mascot-slot .mascot {
+  width: 76px;
+  margin-top: -8px;
+  pointer-events: auto;
+}
+
+/* 精灵宝宝趴在衣柜页右上角 */
+#page-wardrobe {
+  position: relative;
+}
+
+.mascot--elf {
+  position: absolute;
+  top: 74px;
+  right: 18px;
+  z-index: 9;
+  width: 84px;
+}
+
+/* ---------------------------------------------------------------- 按钮与输入 */
+
+.btn {
+  border-radius: var(--radius-pill);
+}
+
+.btn--primary {
+  border-color: rgba(214, 158, 68, 0.42);
+  background: linear-gradient(180deg, #f6c979, #e8a94e);
+  color: #5a3d1e;
+  box-shadow: 0 3px 0 rgba(170, 110, 40, 0.16);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #f2bd63, #dd9a3e);
+  color: #4e3418;
+  box-shadow: 0 8px 18px rgba(180, 120, 50, 0.22);
+}
+
+.btn--ghost {
+  border: 1px dashed var(--border-strong);
+  background: rgba(255, 253, 248, 0.78);
+  color: var(--text-muted);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: #fffefa;
+  color: var(--accent);
+}
+
+.btn--link {
+  color: var(--text-muted);
+}
+
+.btn--link:hover {
+  color: var(--accent);
+}
+
+.btn--danger {
+  color: var(--danger);
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: #fdf0ed;
+  border-color: var(--danger);
+}
+
+.btn--danger-solid {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.btn--danger-solid:hover:not(:disabled) {
+  background: #b96a5a;
+  border-color: #b96a5a;
+}
+
+.input {
+  background-color: #fffefa;
+  border: 1px solid var(--border);
+  color: var(--text);
+  box-shadow: inset 0 1px 3px rgba(80, 120, 160, 0.04);
+}
+
+.input::placeholder {
+  color: var(--text-faint);
+}
+
+.input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(111, 156, 196, 0.16);
+}
+
+.input--search {
+  border-radius: var(--radius-pill);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%237a8ea3' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='M20 20l-4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 13px center;
+}
+
+.select {
+  background-color: #fffefa;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a8ea3' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");
+}
+
+.select:focus,
+.select:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.chip {
+  border: 1px solid var(--border-strong);
+  background: rgba(255, 253, 248, 0.78);
+  color: var(--text-muted);
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  background: #fffefa;
+  color: var(--text);
+}
+
+.chip.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.filter-toggle__count {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.filter-pop {
+  border: 1px solid var(--border);
+  background: #fffefa;
+  box-shadow: 0 18px 36px rgba(80, 120, 160, 0.18);
+}
+
+/* 秋天的和纸胶带换成淡蓝胶带 */
+.filter-pop::before {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--tape) 0 7px,
+      rgba(220, 232, 243, 0.5) 7px 14px
+    );
+  box-shadow: 0 1px 3px rgba(80, 120, 160, 0.10);
+}
+
+.icon-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+/* ---------------------------------------------------------------- 挂杆 */
+
+.rack {
+  margin: 0 18px 18px;
+  padding: 8px 6px 18px;
+  gap: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.rack-section__label {
+  font-family: var(--head-font);
+  color: var(--text-muted);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+}
+
+.rack-section__count {
+  color: var(--text-faint);
+}
+
+.rack-bar {
+  height: 6px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14) 0 2px,
+      rgba(120, 80, 30, 0.06) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #efd39b 0%, #d3a75f 55%, #b07f3a 100%);
+  box-shadow:
+    0 1px 3px rgba(120, 90, 50, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.rack-bar::before,
+.rack-bar::after {
+  background: linear-gradient(180deg, #e0bb7c, #a97a36);
+}
+
+.rack-items {
+  gap: 6px;
+}
+
+.rack-item__hanger svg {
+  stroke: #c9a05a;
+  filter: drop-shadow(0 1px 1px rgba(120, 90, 50, 0.22));
+}
+
+.rack-item__name {
+  color: var(--text);
+}
+
+.rack-item__meta {
+  color: var(--text-muted);
+}
+
+.rack-scroll,
+.accessory-row,
+.shelf__items,
+.shoe-rack {
+  scrollbar-color: rgba(180, 210, 235, 0.85) transparent;
+}
+
+.rack-scroll::-webkit-scrollbar-thumb,
+.accessory-row::-webkit-scrollbar-thumb,
+.shelf__items::-webkit-scrollbar-thumb,
+.shoe-rack::-webkit-scrollbar-thumb {
+  background: rgba(180, 210, 235, 0.85);
+}
+
+/* ---------------------------------------------------------------- 配饰 */
+
+.accessory-rod {
+  height: 4px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14) 0 2px,
+      transparent 2px 5px
+    ),
+    linear-gradient(180deg, #efd39b 0%, #d3a75f 55%, #b07f3a 100%);
+  box-shadow:
+    0 1px 2px rgba(120, 90, 50, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.accessory-rod::before,
+.accessory-rod::after {
+  background: radial-gradient(circle at 35% 30%, #fff6e2, #d3a75f 60%, #a97a36);
+}
+
+.accessory-clip {
+  border-color: rgba(190, 160, 110, 0.42);
+  background: linear-gradient(180deg, #fffdf8, #f0dfc2 60%, #d8c09a);
+  box-shadow: 0 1px 2px rgba(120, 90, 50, 0.16);
+}
+
+.accessory-clip::before {
+  border-color: #d3a75f;
+}
+
+.accessory-clip::after {
+  background: rgba(160, 130, 90, 0.30);
+}
+
+.accessory-shelf-line {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14) 0 2px,
+      rgba(120, 80, 30, 0.06) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #efd39b 0%, #d3a75f 55%, #b07f3a 100%);
+}
+
+.accessory-bag__front {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.22),
+      transparent 32%,
+      transparent 68%,
+      rgba(120, 90, 50, 0.04)
+    ),
+    linear-gradient(180deg, #f7ead2, #ead5b3 60%, #ddc49f);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(120, 90, 50, 0.10);
+}
+
+.accessory-bag__front::before {
+  background: linear-gradient(180deg, #fff6e4, #ecd6b0 70%);
+}
+
+.accessory-bag__front::after {
+  background: rgba(150, 120, 80, 0.10);
+  box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.accessory-tag {
+  background: #fffefa;
+  box-shadow: 0 1px 2px rgba(80, 120, 160, 0.08);
+}
+
+.accessory-tag::before {
+  background: #d8e4f0;
+}
+
+.shelf__line,
+.shoe-board {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.14) 0 2px,
+      rgba(120, 80, 30, 0.06) 2px 4px,
+      transparent 4px 9px
+    ),
+    linear-gradient(180deg, #efd39b, #d3a75f 55%, #b07f3a);
+  box-shadow: 0 2px 3px rgba(120, 90, 50, 0.14);
+}
+
+/* ---------------------------------------------------------------- 衣帽柜 */
+
+.closet {
+  padding: 12px;
+  border: 1px solid #eadcc6;
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 50% 112%, rgba(255, 252, 236, 0.95) 0 6%, rgba(214, 236, 255, 0.55) 24%, transparent 58%),
+    radial-gradient(circle at 12% 16%, rgba(255, 255, 255, 0.85) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 10%, rgba(255, 255, 255, 0.80) 0 1px, transparent 2px),
+    radial-gradient(circle at 90% 62%, rgba(255, 255, 255, 0.60) 0 1px, transparent 2px),
+    linear-gradient(90deg, #f3e6d2, #fffdf8 7%, #fbf4e8 50%, #fffdf8 93%, #f3e6d2);
+  box-shadow:
+    0 18px 30px rgba(80, 120, 160, 0.16),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.58);
+}
+
+.closet::after {
+  background: linear-gradient(180deg, #e8d6ba, #d8c2a2);
+  box-shadow: 0 2px 4px rgba(80, 120, 160, 0.14);
+}
+
+.closet-top {
+  border-color: #e8dcc8;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #eaf5ff, #d8eafb);
+  box-shadow: inset 0 12px 18px rgba(120, 160, 200, 0.12);
+}
+
+/* 中间柜格后面是一小片夜空：格背半透明，月亮和星点会透出来 */
+.closet__middle {
+  position: relative;
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 118%, rgba(255, 250, 232, 0.95) 0 8%, rgba(214, 236, 255, 0.80) 28%, transparent 62%),
+    radial-gradient(circle at 14% 20%, rgba(255, 255, 255, 0.95) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 12%, rgba(255, 255, 255, 0.90) 0 1px, transparent 2px),
+    radial-gradient(circle at 68% 46%, rgba(255, 255, 255, 0.75) 0 1px, transparent 2px),
+    radial-gradient(circle at 34% 72%, rgba(255, 255, 255, 0.65) 0 1px, transparent 2px),
+    linear-gradient(180deg, #dcecfb 0%, #eef6fd 48%, #d9eaf9 100%);
+  box-shadow:
+    inset 0 8px 18px rgba(120, 160, 200, 0.12),
+    0 1px 0 rgba(255, 255, 255, 0.70);
+}
+
+.closet-box {
+  border-color: #eadcc6;
+  background: linear-gradient(180deg, #fffdf8, #f4ead9);
+}
+
+.closet-box::before {
+  background: #eadfcc;
+}
+
+.closet-box::after,
+.closet-door__label,
+.closet-zone-head span,
+.closet-drawer__label,
+.closet-drawer__count {
+  color: var(--text-muted);
+}
+
+.closet-door__label,
+.closet-zone-head span,
+.closet-drawer__label,
+.closet-drawer__count {
+  background: rgba(255, 253, 248, 0.94);
+}
+
+.closet-door__panel {
+  border-color: #e8dcc8;
+  background: linear-gradient(180deg, #fffdf8, #f7efe2);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(80, 120, 160, 0.10);
+}
+
+.closet-door__panel::before {
+  border-color: #f1e6d5;
+}
+
+.closet-door__handle,
+.closet-drawer__handle {
+  background: linear-gradient(180deg, #f3d795, #d3a75f 55%, #a97a36);
+}
+
+.closet-fill {
+  border-color: #e2d5c0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.12) 0 2px,
+      transparent 2px 8px
+    ),
+    linear-gradient(180deg, rgba(243, 250, 255, 0.86), rgba(226, 238, 251, 0.72));
+  box-shadow: inset 0 6px 12px rgba(120, 160, 200, 0.08);
+}
+
+/* 格背半透明：让柜体里的月晕和星点透出来；
+   衣服、标签、柜框都保持更高不透明度，保证对比度 */
+.closet-cell {
+  border-color: #e6d9c4;
+  background: linear-gradient(180deg, rgba(241, 249, 255, 0.66), rgba(226, 238, 251, 0.52));
+  box-shadow:
+    inset 0 8px 14px rgba(120, 160, 200, 0.08),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.closet-cell.is-empty {
+  background: linear-gradient(180deg, rgba(237, 247, 255, 0.58), rgba(224, 238, 251, 0.42));
+}
+
+.closet-cell::after {
+  background: linear-gradient(180deg, #f3e5cf, #dfc9a8);
+  opacity: 0.45;
+}
+
+.closet-cell.is-drop-target {
+  outline-color: #e8a94e;
+  background: #fff6e4;
+}
+
+.closet-drawer__tray {
+  border-color: #e2d5c0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.10) 0 2px,
+      transparent 2px 7px
+    ),
+    linear-gradient(180deg, rgba(243, 250, 255, 0.90), rgba(226, 238, 251, 0.82));
+  box-shadow: inset 0 6px 12px rgba(120, 160, 200, 0.10);
+}
+
+.closet-drawer__cells .closet-cell {
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.94), rgba(243, 236, 224, 0.90));
+  box-shadow: inset 0 3px 6px rgba(120, 160, 200, 0.08);
+}
+
+.closet-drawer__front {
+  border-color: #e8dcc8;
+  background: linear-gradient(180deg, #fffdf8, #f7efe2);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgba(80, 120, 160, 0.10);
+}
+
+.closet-drawer__front::before {
+  border-color: #f1e6d5;
+}
+
+.closet-drawer__cell-index {
+  color: var(--text-faint);
+}
+
+.closet-item__tag {
+  background: rgba(255, 253, 248, 0.97);
+  color: var(--text);
+}
+
+.closet-item__delete {
+  background: rgba(255, 255, 255, 0.94);
+}
+
+/* ---------------------------------------------------------------- 空状态与小人 */
+
+.empty::before {
+  content: none;
+}
+
+.empty__title {
+  font-family: var(--head-font);
+  color: var(--heading-color);
+}
+
+.empty__text {
+  color: var(--text-muted);
+}
+
+.mascot--bowl {
+  width: 168px;
+}
+
+.mascot--fly {
+  width: 136px;
+}
+
+/* ---------------------------------------------------------------- 小人通用 */
+
+.mascot {
+  display: inline-grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  z-index: 2;
+}
+
+.mascot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 4px 8px rgba(80, 110, 140, 0.18));
+  transition: transform 180ms var(--ease), filter 180ms var(--ease);
+}
+
+.mascot:hover img,
+.mascot:focus-visible img {
+  transform: translateY(-2px) scale(1.04);
+  filter: drop-shadow(0 7px 12px rgba(80, 110, 140, 0.24));
+}
+
+.mascot:focus-visible {
+  outline: 2px dashed var(--accent);
+  outline-offset: 3px;
+  border-radius: 12px;
+}
+
+.mascot.is-playing img {
+  animation: mascot-hop 560ms var(--ease);
+}
+
+@keyframes mascot-hop {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  30% { transform: translateY(-7px) rotate(-3deg); }
+  60% { transform: translateY(-2px) rotate(2deg); }
+}
+
+/* 空鞋格里的奶牛宝宝：只占角色本身，不挡格子拖拽 */
+.mascot--cow {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 74px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* ---------------------------------------------------------------- 空柜里的奶油宝宝 */
+
+/* 大格：七只小人轮流做很淡的奶油底纹。格子放了单品后
+   .is-empty 被移除，底纹会自动消失，不需要额外 JS。 */
+.closet-cell.is-empty::before {
+  content: "";
+  position: absolute;
+  inset: 12% 18% 8%;
+  z-index: 0;
+  background: url("/assets/characters/cream1.webp") center bottom / contain no-repeat;
+  opacity: 0.34;
+  pointer-events: none;
+}
+
+.closet-cell.is-empty:nth-child(7n + 2)::before {
+  background-image: url("/assets/characters/cream2.webp");
+}
+.closet-cell.is-empty:nth-child(7n + 3)::before {
+  background-image: url("/assets/characters/cream3.webp");
+}
+.closet-cell.is-empty:nth-child(7n + 4)::before {
+  background-image: url("/assets/characters/cream4.webp");
+}
+.closet-cell.is-empty:nth-child(7n + 5)::before {
+  background-image: url("/assets/characters/cream5.webp");
+}
+.closet-cell.is-empty:nth-child(7n + 6)::before {
+  background-image: url("/assets/characters/cream6.webp");
+}
+.closet-cell.is-empty:nth-child(7n + 7)::before {
+  background-image: url("/assets/characters/cream7.webp");
+}
+
+.closet-shoes .closet-cell.is-empty::before {
+  inset: 10% 20% 8%;
+}
+
+.closet-hats .closet-cell.is-empty::before {
+  inset: 16% 24% 10%;
+}
+
+.closet-bags .closet-cell.is-empty::before {
+  inset: 8% 24% 8%;
+}
+
+/* 抽屉小格只露一个小头像 */
+.closet-drawer__cells .closet-cell.is-empty::before {
+  inset: 4% 18% 4%;
+  background-image: url("/assets/characters/cream-head1.webp");
+  opacity: 0.30;
+}
+
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 2)::before {
+  background-image: url("/assets/characters/cream-head2.webp");
+}
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 3)::before {
+  background-image: url("/assets/characters/cream-head3.webp");
+}
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 4)::before {
+  background-image: url("/assets/characters/cream-head4.webp");
+}
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 5)::before {
+  background-image: url("/assets/characters/cream-head5.webp");
+}
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 6)::before {
+  background-image: url("/assets/characters/cream-head6.webp");
+}
+.closet-drawer__cells .closet-cell.is-empty:nth-child(7n + 7)::before {
+  background-image: url("/assets/characters/cream-head7.webp");
+}
+
+/* 这一格已经坐着可点小人，就不再叠底纹 */
+.closet-cell.is-empty.has-mascot::before,
+.closet-cell.is-empty:has(> .mascot)::before {
+  content: none;
+}
+
+/* 帽子格：飞行宝宝浮在上方 */
+.mascot--fly-hat {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+  z-index: 2;
+  width: 56px;
+  transform: translateX(-50%);
+}
+
+/* 包格：勺子宝宝坐在搁板上 */
+.mascot--spoon-bag {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  z-index: 2;
+  width: 64px;
+  transform: translateX(-50%);
+}
+
+/* 抽屉小格：碗里宝宝只露一个头 */
+.mascot--bowl-drawer {
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  z-index: 3;
+  width: 26px;
+  transform: translateX(-50%);
+}
+
+/* 小人气泡：固定定位，避免被面板的 overflow 裁掉 */
+.mascot-bubble {
+  position: fixed;
+  z-index: 400;
+  max-width: 230px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 253, 248, 0.98);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.6;
+  text-align: center;
+  box-shadow: 0 10px 24px rgba(70, 110, 150, 0.20);
+  opacity: 0;
+  transform: translate(-50%, 6px) scale(0.94);
+  transform-origin: 50% 100%;
+  transition: opacity 160ms ease, transform 180ms var(--ease);
+  pointer-events: none;
+}
+
+.mascot-bubble.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0) scale(1);
+}
+
+.mascot-bubble::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  background: inherit;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 2px 0;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.mascot-bubble--below {
+  transform-origin: 50% 0;
+}
+
+.mascot-bubble--below::after {
+  bottom: auto;
+  top: -5px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-radius: 2px 0 0 0;
+}
+
+/* ---------------------------------------------------------------- 设置·外观里的勺子宝宝 */
+
+.settings__section--appearance {
+  position: relative;
+  min-height: 122px;
+  padding-right: 118px;
+}
+
+.settings__section--appearance .settings__title {
+  margin-bottom: 6px;
+}
+
+.settings__section--appearance .settings__text {
+  max-width: 440px;
+}
+
+.mascot--spoon {
+  position: absolute;
+  right: 10px;
+  bottom: 6px;
+  width: 92px;
+}
+
+/* ---------------------------------------------------------------- 抽屉与弹窗 */
+
+.modal__backdrop {
+  background: rgba(47, 88, 120, 0.28);
+}
+
+.modal__panel {
+  background: #fffdf8;
+  border-color: var(--border);
+  box-shadow: 0 22px 50px rgba(60, 100, 140, 0.22);
+}
+
+.drawer__backdrop {
+  background: rgba(47, 88, 120, 0.18);
+}
+
+.drawer__panel {
+  background: #fffdf8;
+  border-left-color: var(--border);
+  box-shadow: -24px 0 60px rgba(60, 100, 140, 0.15);
+}
+
+.drawer__head,
+.drawer__foot {
+  border-color: var(--border);
+}
+
+.upload__preview {
+  border-color: var(--border-strong);
+  background-color: #f7fbff;
+}
+
+.upload__preview.has-image {
+  background-color: #fffdf8;
+}
+
+.toast {
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: 0 12px 26px rgba(60, 100, 140, 0.20);
+}
+
+.toast--error {
+  background: var(--danger);
+}
+
+/* ---------------------------------------------------------------- 小窗口适配 */
+
+@media (max-width: 1120px) {
+  /* 顶栏没有多余空位时，相机宝宝先让位 */
+  .topbar__mascot-slot {
+    display: none;
+  }
+}
+
+@media (max-height: 760px) {
+  .sidebar__brand {
+    padding-top: 12px;
+  }
+
+  .sidebar__logo {
+    width: 188px;
+  }
+
+  .sidebar__nav {
+    padding: 6px 14px 8px;
+  }
+
+  .sidebar__foot {
+    min-height: 116px;
+    padding-top: 10px;
+  }
+
+  .mascot--bench {
+    width: 92px;
+  }
+
+  .topbar--wardrobe {
+    padding-top: 12px;
+  }
+
+  .mascot--elf {
+    top: 64px;
+    width: 72px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot img,
+  .mascot.is-playing img {
+    animation: none;
+    transition: none;
+  }
+
+  .mascot-bubble {
+    transition-duration: 1ms;
+  }
+}

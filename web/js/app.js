@@ -5,6 +5,7 @@
   async function boot() {
     try {
       App.welcome.init();
+      App.mascots.init();
       const meta = await App.api.get('/api/meta');
       document.getElementById('app-version').textContent = `v${meta.app.version}`;
       App.nav.init();

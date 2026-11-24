@@ -47,7 +47,7 @@ def main() -> int:
             width=WINDOW_WIDTH,
             height=WINDOW_HEIGHT,
             min_size=WINDOW_MIN_SIZE,
-            background_color="#F6EFE1",
+            background_color="#CFE2F5",
             text_select=False,
         )
         webview.start(debug=debug)

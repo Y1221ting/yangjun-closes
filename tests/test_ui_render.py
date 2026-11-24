@@ -105,18 +105,38 @@ def main() -> int:
         # 1. 空衣柜
         html = dump_dom(browser, base + "/", profile)
         checks = [
-            ("yt的衣柜", "页面标题"),
+            ("Yelena 的衣柜", "页面标题"),
             ("衣柜还是空的", "空状态文案"),
             ("添加衣服", "添加按钮"),
-            ('id="welcome"', "启动欢迎页"),
-            ("welcome__art", "欢迎页花体图"),
-            ("正在打开你的衣柜", "欢迎页文案"),
-            ("点击任意处跳过", "欢迎页跳过提示"),
+            ('id="splash"', "启动等待封面"),
+            ("splash__art", "等待封面高清插画"),
+            ("正在掀开衣柜的小帘子", "等待封面文案"),
+            ("点击任意处跳过", "等待封面跳过提示"),
         ]
         for text, label in checks:
             ok = text in html
             failures += 0 if ok else 1
             print(f"[{'PASS' if ok else 'FAIL'}] {label}：{text}")
+
+        # 1.1 新皮肤、Logo 和准备好的小人
+        for needle, label in [
+            ("theme-yelena.css", "蓝水彩皮肤"),
+            ("/assets/logo.webp", "侧栏贴纸 Logo"),
+            ('data-mascot="camera"', "相机宝宝"),
+            ('data-mascot="bench"', "长椅宝宝"),
+            ('data-mascot="elf"', "精灵宝宝"),
+            ('data-mascot="bowl"', "碗里宝宝"),
+            ('data-mascot="fly"', "飞行宝宝"),
+            ('data-mascot="spoon"', "勺子宝宝"),
+        ]:
+            ok = needle in html
+            failures += 0 if ok else 1
+            print(f"[{'PASS' if ok else 'FAIL'}] {label}：{needle}")
+
+        splash_layers = html.count('class="splash__layer')
+        ok = splash_layers >= 8
+        failures += 0 if ok else 1
+        print(f"[{'PASS' if ok else 'FAIL'}] 等待封面分层（实际 {splash_layers} 层）")
 
         # 2. 造一件衣服，再渲染
         body = json.dumps(
@@ -249,6 +269,11 @@ def main() -> int:
             ("收纳盒 1", "顶柜收纳盒标签"),
             ("鞋 · 8 格", "鞋格标签"),
             ("帽子（上） / 包（下）", "帽包标签"),
+            ('data-lines="hat"', "帽子格飞行宝宝"),
+            ('data-lines="bag"', "包格勺子宝宝"),
+            ('data-lines="drawer"', "抽屉碗里宝宝"),
+            ('class="mascot mascot--fly-hat"', "飞行宝宝站位"),
+            ("has-mascot", "空格小人标记"),
             ("小配饰抽屉 · 9 格", "抽屉标签"),
             ("小配饰 1–3", "抽屉区间标签"),
             ('class="closet-drawer__cell-index"', "抽屉小格编号"),
@@ -265,6 +290,10 @@ def main() -> int:
         ok = "shoe-section" not in html and "shelf-item" not in html
         failures += 0 if ok else 1
         print(f"[{'PASS' if ok else 'FAIL'}] 旧鞋柜和隔板结构已移除")
+
+        ok = 'data-mascot="cow"' in html
+        failures += 0 if ok else 1
+        print(f"[{'PASS' if ok else 'FAIL'}] 空鞋格里的奶牛宝宝")
 
         # 2.3 配饰区与抽屉
         for name, style, color in [

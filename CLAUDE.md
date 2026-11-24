@@ -1,9 +1,9 @@
-# CLAUDE.md - 个人衣柜
+# CLAUDE.md - Yelena 的衣柜
 
 ## 项目概述
 
-Windows 本地个人衣柜与搭配桌面软件（界面显示名 **yt的衣柜**，
-exe 文件名仍为 `个人衣柜.exe`）。用户导入自己衣服的
+Windows 本地衣柜与搭配桌面软件（界面显示名 **Yelena 的衣柜**）。
+用户导入自己衣服的
 「正面 / 侧面 / 背面」三张透明背景 PNG，在画布上自由拼贴搭配，
 再把整套搭配套到自己的全身照上预览。
 
@@ -11,7 +11,7 @@ exe 文件名仍为 `个人衣柜.exe`）。用户导入自己衣服的
 
 ## 项目路径
 
-`C:\Users\杨婷\Desktop\yangjun-closes`（朋友版代码基线，按实际路径修改）
+`C:\Users\杨婷\Desktop\yangjun-closes`（Yelena 的衣柜，按实际路径修改）
 
 ## 文档体系（docs/）
 
@@ -60,9 +60,11 @@ exe 文件名仍为 `个人衣柜.exe`）。用户导入自己衣服的
     进入各自分区，每格独立木隔板，手动拖动换格，空格保留。
 13. 左侧栏是衣橱目录（带件数），顶部只留搜索 / 筛选弹层 / 添加；
     分类导航不再放回顶部。
-14. 界面为秋日手作风；搭配画布和上身图展示台必须保持纯白。
-15. 启动欢迎页约 1.6 秒淡出，可跳过；设置页开关存在
-    `localStorage['yt-welcome']`，`off` 表示关闭。
+14. 界面为蓝水彩夜空风：雾蓝背景、奶油悬浮面板、金色挂杆、奶白衣帽柜、
+    幼圆标题；搭配画布和上身图展示台必须保持纯白。
+15. 启动等待封面约 1.4 秒淡出，点击立即跳过；设置页开关同时写
+    cookie 和 `localStorage['yelena-welcome']`，cookie 不区分端口，
+    随机端口启动也能记住“关闭”。
 16. 搭配页顶部是「我的试衣模特」：五角度透明图存在 `data/model/`，
     可拖动旋转；模特图属于个人素材，不进 Git。以后搭配上身图在这里切换。
 
@@ -86,18 +88,19 @@ py -3.11 -m venv .venv
 .venv/Scripts/python.exe main.py
 
 # 打包程序
-.venv/Scripts/pyinstaller.exe --noconfirm --onefile --windowed --name=个人衣柜 ^
+.venv/Scripts/pyinstaller.exe --noconfirm --onefile --windowed --name=Yelena的衣柜 ^
   --icon=web/assets/icon.ico --add-data "web;web" ^
   --collect-all webview --collect-all pythonnet --collect-all clr_loader main.py
 ```
 
 ## 远程仓库
 
-`https://github.com/Y1221ting/yt-closes.git`（main 分支）
+`https://github.com/Y1221ting/yangjun-closes.git`（main 分支）
 
 ## 用户偏好
 
 - 用户是编程小白，不懂代码
 - 需要最终产物是可双击运行的 .exe
 - 开发过程中需要清晰反馈进展
-- 界面风格：秋日手作风（纸色、棕墨、行楷标题、干花与胶带装饰，靠 CSS 变量实现）
+- 界面风格：蓝水彩夜空风（雾蓝、奶油、金色挂杆、幼圆标题；靠 `variables.css`
+  变量 + `theme-yelena.css` 覆盖实现）

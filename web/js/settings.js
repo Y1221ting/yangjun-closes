@@ -182,7 +182,7 @@
     els.welcomeToggle.addEventListener('change', () => {
       const on = els.welcomeToggle.checked;
       App.welcome.setEnabled(on);
-      App.ui.toast(on ? '下次启动会显示欢迎页' : '已关闭启动欢迎页');
+      App.ui.toast(on ? '下次启动会显示等待封面' : '已关闭等待封面');
     });
     load();
   }

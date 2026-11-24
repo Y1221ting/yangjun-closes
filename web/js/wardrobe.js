@@ -590,6 +590,26 @@
     return cell;
   }
 
+  // 空柜里的可点小人：只占角色本身，不改变格子的拖拽区域
+  function mascotButton(key, label, image, className = '', lines = '') {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `mascot ${className || `mascot--${key}`}`;
+    button.dataset.mascot = key;
+    if (lines) button.dataset.lines = lines;
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.innerHTML = `<img src="/assets/characters/${image}" alt="" draggable="false">`;
+    return button;
+  }
+
+  function addZoneMascot(section, selector, key, label, image, className, lines = '') {
+    const cell = section.querySelector(`${selector} .closet-cell.is-empty`);
+    if (!cell) return;
+    cell.appendChild(mascotButton(key, label, image, className, lines));
+    cell.classList.add('has-mascot');
+  }
+
   function fillCabinetGrid(container, zone, total, map) {
     container.innerHTML = '';
     for (let slot = 0; slot < total; slot += 1) {
@@ -701,6 +721,16 @@
     for (let index = 0; index < drawerCount; index += 1) {
       drawerBox.appendChild(drawerElement(index, drawerMap));
     }
+
+    // 每个柜区第一只可点小人：格子被占就自动挪到同区下一个空格
+    addZoneMascot(section, '.closet-shoes', 'cow', '奶牛宝宝',
+                  'char7.webp', 'mascot--cow');
+    addZoneMascot(section, '.closet-hats', 'fly', '飞行宝宝',
+                  'char1.webp', 'mascot--fly-hat', 'hat');
+    addZoneMascot(section, '.closet-bags', 'spoon', '勺子宝宝',
+                  'char6.webp', 'mascot--spoon-bag', 'bag');
+    addZoneMascot(section, '.closet-drawer__cells', 'bowl', '碗里宝宝',
+                  'head3.webp', 'mascot--bowl-drawer', 'drawer');
 
     section.querySelectorAll('[data-panel]').forEach((button) => {
       button.addEventListener('click', (event) => {
@@ -974,6 +1004,8 @@
 
       const query = params.toString();
       state.items = await App.api.get('/api/garments' + (query ? `?${query}` : ''));
+      // 先结束 loading 再渲染，否则空状态会因为 state.loading 一直是 true 而不显示
+      state.loading = false;
       render();
       loadCounts();
     } catch (err) {

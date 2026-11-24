@@ -1,29 +1,29 @@
 /* 全局设计变量：换皮肤只改这里，不动功能代码。 */
 
 :root {
-  /* 颜色：秋日手作风（纸色 + 棕墨 + 枫叶橘 + 鼠尾草绿） */
-  --bg: #f6efe1;
-  --surface: #fbf6ec;
-  --surface-hover: #f1e5d1;
-  --paper-white: #fffdf7;
-  --border: #e6d7bf;
-  --border-strong: #d3bfa0;
-  --text: #4a3526;
-  --text-muted: #8d7660;
-  --text-faint: #b3a08a;
-  --accent: #6d4426;
-  --accent-dark: #5e3a1f;
-  --accent-text: #fff9ef;
-  --accent-warm: #c9783f;
-  --sage: #9aae8b;
-  --danger: #b0482f;
-  --success: #6f8a5b;
-  --sidebar-bg: rgba(252, 247, 237, 0.82);
-  --tape: rgba(214, 189, 150, 0.62);
+  /* 颜色：蓝水彩夜空（雾蓝 + 奶油纸 + 金色挂杆 + 淡蓝玻璃柜） */
+  --bg: #eef6fd;
+  --surface: #fbfdff;
+  --surface-hover: #eef7ff;
+  --paper-white: #fffefa;
+  --border: #dce8f3;
+  --border-strong: #c6d9ea;
+  --text: #4f6378;
+  --text-muted: #7a8ea3;
+  --text-faint: #a9bccc;
+  --accent: #6f9cc4;
+  --accent-dark: #5a87b0;
+  --accent-text: #fffdf8;
+  --accent-warm: #f2b45f;
+  --sage: #a8c4b0;
+  --danger: #c97a6a;
+  --success: #7fa88a;
+  --sidebar-bg: rgba(255, 253, 248, 0.94);
+  --tape: rgba(198, 217, 234, 0.55);
 
   /* 圆角 */
-  --radius-card: 14px;
-  --radius-btn: 10px;
+  --radius-card: 16px;
+  --radius-btn: 12px;
   --radius-pill: 999px;
 
   /* 间距（8 的倍数） */
@@ -33,10 +33,12 @@
   --space-4: 32px;
   --space-5: 48px;
 
-  /* 字体 */
+  /* 字体：标题用幼圆，正文用系统黑体 */
   --font-sans: "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
-  --font-serif: "华文行楷", "STXingkai", "华文楷体", "STKaiti", "KaiTi", "楷体", serif;
-  --font-kai: "华文楷体", "STKaiti", "KaiTi", "楷体", serif;
+  --head-font: "幼圆", "YouYuan", "Microsoft YaHei", sans-serif;
+  --heading-color: #4f6378;
+  --font-serif: var(--head-font);
+  --font-kai: "幼圆", "YouYuan", "Microsoft YaHei", sans-serif;
   --font-size-xs: 12px;
   --font-size-sm: 13px;
   --font-size-md: 15px;
@@ -48,7 +50,7 @@
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
   --duration: 180ms;
 
-  /* 阴影 */
-  --shadow-card: 0 1px 2px rgba(93, 64, 38, 0.06);
-  --shadow-float: 0 10px 26px rgba(93, 64, 38, 0.14);
+  /* 阴影：偏冷的蓝灰投影，像纸片浮在水面上 */
+  --shadow-card: 0 2px 6px rgba(80, 120, 160, 0.10);
+  --shadow-float: 0 14px 30px rgba(80, 120, 160, 0.18);
 }
