@@ -227,6 +227,127 @@
   z-index: 2;
 }
 
+/* ---------------------------------------------------------------- 小人专属小动作 */
+
+.mascot[data-mascot="camera"].is-playing img {
+  animation: mascot-camera 550ms var(--ease);
+}
+
+.mascot[data-mascot="bench"].is-playing img {
+  animation: mascot-rock 700ms var(--ease);
+}
+
+.mascot[data-mascot="elf"].is-playing img {
+  animation: mascot-cat 700ms var(--ease);
+}
+
+.mascot[data-mascot="cow"].is-playing img {
+  animation: mascot-bounce 800ms var(--ease);
+}
+
+.mascot[data-mascot="bowl"].is-playing img {
+  animation: mascot-float 700ms var(--ease);
+}
+
+.mascot[data-mascot="fly"].is-playing img {
+  animation: mascot-loop 700ms var(--ease);
+}
+
+.mascot[data-mascot="spoon"].is-playing img {
+  animation: mascot-stir 700ms var(--ease);
+}
+
+/* 精灵/碗里：点一下冒一颗小金星 */
+.mascot[data-mascot="elf"].is-playing::after,
+.mascot[data-mascot="bowl"].is-playing::after {
+  content: "✦";
+  position: absolute;
+  right: -2px;
+  top: -6px;
+  color: #f6d38b;
+  font-size: 16px;
+  line-height: 1;
+  pointer-events: none;
+  animation: mascot-sparkle 700ms ease-out both;
+}
+
+.mascot--bowl-drawer[data-mascot="bowl"].is-playing::after {
+  right: -1px;
+  top: -3px;
+  font-size: 11px;
+}
+
+/* 相机：点一下先闪一下 */
+.mascot[data-mascot="camera"].is-playing::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  pointer-events: none;
+  animation: mascot-flash 500ms ease-out;
+}
+
+@keyframes mascot-camera {
+  0%, 100% { transform: scale(1) rotate(0); }
+  30% { transform: scale(1.10) rotate(-2deg); }
+  60% { transform: scale(0.96) rotate(1deg); }
+}
+
+@keyframes mascot-rock {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-4deg); }
+  75% { transform: rotate(4deg); }
+}
+
+@keyframes mascot-cat {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  30% { transform: rotate(-5deg) translateY(-2px); }
+  65% { transform: rotate(4deg) translateY(0); }
+}
+
+@keyframes mascot-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  25% { transform: translateY(-14px) scale(1.05); }
+  50% { transform: translateY(0) scale(0.98); }
+  70% { transform: translateY(-5px) scale(1.01); }
+}
+
+@keyframes mascot-float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-7px) rotate(-2deg); }
+}
+
+@keyframes mascot-loop {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  25% { transform: translate(-6px, -8px) rotate(-4deg); }
+  50% { transform: translate(5px, -5px) rotate(3deg); }
+  75% { transform: translate(2px, 3px) rotate(-1deg); }
+}
+
+@keyframes mascot-stir {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-7deg); }
+  45% { transform: rotate(7deg); }
+  70% { transform: rotate(-4deg); }
+}
+
+@keyframes mascot-sparkle {
+  0% { opacity: 0; transform: scale(0.4) rotate(0); }
+  35% { opacity: 1; transform: scale(1.2) rotate(20deg); }
+  100% { opacity: 0; transform: scale(0.6) rotate(45deg) translateY(-8px); }
+}
+
+@keyframes mascot-flash {
+  0% { opacity: 0; transform: scale(0.6); }
+  25% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
 /* ---------------------------------------------------------------- 小窗口 */
 
 @media (max-height: 760px) {
@@ -254,5 +375,16 @@
 
   .mascot--outfit-filter {
     width: 92px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot[data-mascot].is-playing img {
+    animation: none;
+  }
+
+  .mascot[data-mascot].is-playing::after {
+    content: none;
+    animation: none;
   }
 }
