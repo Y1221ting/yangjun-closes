@@ -464,6 +464,7 @@ def main() -> int:
             ("场景标签", "场景面板"),
             ("选中的单品", "单品面板"),
             ("UI 搭配", "名称输入框"),
+            ('id="btn-save-outfit"', "搭配手动保存按钮"),
         ]:
             ok = text in editor_html
             failures += 0 if ok else 1

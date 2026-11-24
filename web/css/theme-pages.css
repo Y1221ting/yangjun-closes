@@ -378,6 +378,16 @@
   }
 }
 
+@media (max-width: 1180px) {
+  #page-outfit .topbar__actions {
+    gap: 8px;
+  }
+
+  #page-outfit .topbar__actions .btn {
+    padding: 0 10px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mascot[data-mascot].is-playing img {
     animation: none;

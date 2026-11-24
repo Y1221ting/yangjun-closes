@@ -47,6 +47,7 @@
     els.viewport = document.getElementById('canvas-viewport');
     els.name = document.getElementById('outfit-name');
     els.saveStatus = document.getElementById('save-status');
+    els.saveBtn = document.getElementById('btn-save-outfit');
     els.search = document.getElementById('editor-search');
     els.garments = document.getElementById('editor-garments');
     els.scenes = document.getElementById('outfit-scenes');
@@ -399,9 +400,11 @@
         payload
       );
       setStatus('已保存');
+      return true;
     } catch (err) {
       setStatus('保存失败');
       App.ui.toast(err.message, 'error');
+      return false;
     }
   }
 
@@ -420,9 +423,22 @@
       state.outfit.name = updated.name;
       state.outfit.scenes = updated.scenes;
       setStatus('已保存');
+      return true;
     } catch (err) {
       setStatus('保存失败');
       App.ui.toast(err.message, 'error');
+      return false;
+    }
+  }
+
+  // 自动保存之外，再给一个手动保存按钮，点一下立即写入并提示
+  async function saveNow() {
+    clearTimeout(state.saveTimer);
+    clearTimeout(state.metaTimer);
+    setStatus('保存中…');
+    const results = await Promise.all([saveItems(), saveMeta()]);
+    if (results.every(Boolean)) {
+      App.ui.toast('搭配已保存');
     }
   }
 
@@ -567,6 +583,7 @@
       .getElementById('btn-outfit-back')
       .addEventListener('click', () => App.nav.toOutfits());
     els.deleteBtn.addEventListener('click', onDeleteOutfit);
+    els.saveBtn.addEventListener('click', saveNow);
     els.exportBtn.addEventListener('click', exportOutfit);
     els.wornBtn.addEventListener('click', () => {
       if (state.outfit) {
