@@ -32,6 +32,7 @@
   <link rel="stylesheet" href="/css/outfit.css">
   <link rel="stylesheet" href="/css/model.css">
   <link rel="stylesheet" href="/css/theme-yelena.css">
+  <link rel="stylesheet" href="/css/theme-pages.css">
   <link rel="stylesheet" href="/css/welcome.css">
 </head>
 <body>
@@ -229,12 +230,20 @@
         <section class="grid" id="outfit-grid"></section>
 
         <section class="empty" id="outfit-empty" hidden>
+          <button class="mascot mascot--outfit" type="button" data-mascot="elf"
+                  data-lines="outfit" aria-label="精灵宝宝" title="精灵宝宝">
+            <img src="/assets/characters/char4.webp" alt="" draggable="false">
+          </button>
           <p class="empty__title">还没有搭配</p>
           <p class="empty__text">新建一套搭配，把衣服拖到画布上自由组合。</p>
           <button class="btn btn--primary" id="btn-new-outfit-empty" type="button">新建第一套搭配</button>
         </section>
 
         <section class="empty" id="outfit-filter-empty" hidden>
+          <button class="mascot mascot--outfit-filter" type="button" data-mascot="fly"
+                  data-lines="outfit-filter" aria-label="飞行宝宝" title="飞行宝宝">
+            <img src="/assets/characters/char1.webp" alt="" draggable="false">
+          </button>
           <p class="empty__title">没有符合条件的搭配</p>
           <p class="empty__text">换个场景或关键词试试。</p>
           <button class="btn btn--ghost" id="btn-outfit-clear-empty" type="button">清除筛选</button>
@@ -395,12 +404,17 @@
             </button>
           </section>
 
-          <section class="settings__section">
+          <section class="settings__section settings__section--trash">
             <h2 class="settings__title">回收站</h2>
             <p class="settings__text">
               删除的衣服和搭配会先放进回收站，图片不会立刻删除，可以随时恢复。<br>
               只有「彻底删除」才会真正移除图片文件。
             </p>
+            <button class="mascot mascot--recycle" type="button" data-mascot="bench"
+                    data-lines="recycle" id="trash-mascot"
+                    aria-label="长椅宝宝" title="长椅宝宝" hidden>
+              <img src="/assets/characters/char2.webp" alt="" draggable="false">
+            </button>
 
             <h3 class="settings__subtitle">
               衣服 <span id="trash-garment-count" class="settings__count"></span>

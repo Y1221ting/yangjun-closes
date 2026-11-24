@@ -13,6 +13,7 @@
     els.backupInfo = document.getElementById('backup-info');
     els.backupBtn = document.getElementById('btn-backup');
     els.welcomeToggle = document.getElementById('welcome-toggle');
+    els.trashMascot = document.getElementById('trash-mascot');
   }
 
   function formatSize(bytes) {
@@ -163,8 +164,15 @@
     try {
       const data = await App.api.get('/api/trash');
       state.data = data;
-      renderGarments(data.garments || []);
-      renderOutfits(data.outfits || []);
+      const garments = data.garments || [];
+      const outfits = data.outfits || [];
+      renderGarments(garments);
+      renderOutfits(outfits);
+
+      // 衣服和搭配的回收站都空时，长椅宝宝出来陪一下
+      if (els.trashMascot) {
+        els.trashMascot.hidden = garments.length > 0 || outfits.length > 0;
+      }
 
       const latest = (data.backups || [])[0];
       els.backupInfo.textContent = latest

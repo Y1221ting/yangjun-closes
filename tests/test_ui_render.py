@@ -121,6 +121,7 @@ def main() -> int:
         # 1.1 新皮肤、Logo 和准备好的小人
         for needle, label in [
             ("theme-yelena.css", "蓝水彩皮肤"),
+            ("theme-pages.css", "搭配/详情/模特页皮肤"),
             ("/assets/logo.webp", "侧栏贴纸 Logo"),
             ('data-mascot="camera"', "相机宝宝"),
             ('data-mascot="bench"', "长椅宝宝"),
@@ -437,10 +438,13 @@ def main() -> int:
 
         for needle, label in [
             ('class="model-hero"', "搭配页模特卡片"),
+            ('data-empty="false"', "有模特图时展开模特卡片"),
             ('id="model-view"', "模特旋转视图"),
             ('id="model-dots"', "模特角度圆点"),
             ("我的试衣模特", "模特标题"),
             ("基准模特", "基准模特标签"),
+            ('data-lines="outfit"', "空搭配页精灵宝宝"),
+            ('data-lines="outfit-filter"', "搭配筛选空状态飞行宝宝"),
         ]:
             ok = needle in outfits_html
             failures += 0 if ok else 1
@@ -547,6 +551,8 @@ def main() -> int:
             ("回收站", "回收站区块"),
             ("立即备份", "备份按钮"),
             ("回收站里没有衣服", "空回收站提示"),
+            ('id="trash-mascot"', "回收站长椅宝宝"),
+            ('data-lines="recycle"', "回收站长椅台词"),
         ]:
             ok = text in settings_html
             failures += 0 if ok else 1

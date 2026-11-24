@@ -33,7 +33,9 @@
     try {
       const data = await App.api.get('/api/model');
       const images = data.images || {};
-      if (Object.keys(images).length) {
+      const hasImages = Object.keys(images).length > 0;
+      els.hero.dataset.empty = hasImages ? 'false' : 'true';
+      if (hasImages) {
         els.empty.hidden = true;
         els.view.hidden = false;
         view.mount(images, data.updated_at);

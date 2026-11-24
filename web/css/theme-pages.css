@@ -1,0 +1,258 @@
+/* Yelena 的衣柜 · 阶段二页面皮肤
+ *
+ * 搭配库 / 搭配编辑 / 上身展示 / 衣服详情 / 设置内页 / 模特卡片。
+ * 原则：搭配画布和上身图展示台保持纯白，只改周边与空状态。
+ */
+
+/* ---------------------------------------------------------------- 模特卡片 */
+
+.model-hero {
+  background: linear-gradient(180deg, rgba(255, 253, 248, 0.97), rgba(251, 244, 232, 0.96));
+  border-color: #eadcc6;
+  box-shadow:
+    0 16px 34px rgba(80, 120, 160, 0.14),
+    inset 0 1px 0 #ffffff;
+}
+
+/* 秋天的和纸胶带换成淡蓝胶带 */
+.model-hero::before {
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--tape) 0 7px,
+      rgba(220, 232, 243, 0.50) 7px 14px
+    );
+  box-shadow: 0 1px 3px rgba(80, 120, 160, 0.10);
+}
+
+/* 右下角的枫叶换成一颗小金星 */
+.model-hero::after {
+  content: "✦";
+  right: 22px;
+  bottom: 12px;
+  width: auto;
+  height: auto;
+  background: none;
+  color: rgba(240, 180, 95, 0.42);
+  font-size: 24px;
+  line-height: 1;
+  opacity: 1;
+  transform: rotate(-8deg);
+}
+
+/* 奶白/淡蓝衣帽间：蓝墙 + 金色地板 + 月晕 */
+.model-stage {
+  background:
+    radial-gradient(
+      circle at 50% 18%,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0) 58%
+    ),
+    radial-gradient(
+      circle at 50% 84%,
+      rgba(255, 250, 235, 0.95) 0 8%,
+      rgba(214, 236, 255, 0.55) 30%,
+      transparent 62%
+    ),
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.90) 0 1px, transparent 2px),
+    radial-gradient(circle at 78% 12%, rgba(255, 255, 255, 0.80) 0 1px, transparent 2px),
+    radial-gradient(circle at 88% 58%, rgba(255, 255, 255, 0.60) 0 1px, transparent 2px),
+    linear-gradient(
+      180deg,
+      #dcecfb 0%,
+      #eaf5ff 68%,
+      #f3e2c4 68%,
+      #e2c79b 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.82),
+    inset 0 -24px 36px rgba(80, 120, 160, 0.10);
+}
+
+.model-stage::before {
+  background: rgba(170, 140, 90, 0.28);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.model-stage::after {
+  bottom: 10%;
+  width: 42%;
+  height: 14px;
+  background: radial-gradient(
+    ellipse,
+    rgba(80, 120, 160, 0.18) 0%,
+    rgba(80, 120, 160, 0) 70%
+  );
+}
+
+.model-view .rotate-view__hint {
+  background: rgba(255, 253, 248, 0.82);
+  color: var(--text-muted);
+}
+
+.model-view .rotate-view__dot {
+  background: rgba(160, 190, 215, 0.45);
+}
+
+.model-view .rotate-view__dot.is-active {
+  background: var(--accent);
+}
+
+.model-empty__title,
+.model-info__title {
+  color: var(--heading-color);
+}
+
+.model-info__soon {
+  border-color: var(--border-strong);
+  color: var(--text-faint);
+}
+
+/* 没有模特图时，模特卡片收成一条，给下面的空搭配让出空间 */
+.model-hero[data-empty="true"] {
+  grid-template-columns: 136px minmax(0, 1fr);
+  align-items: center;
+}
+
+.model-hero[data-empty="true"] .model-stage {
+  width: 136px;
+  aspect-ratio: 1 / 1;
+}
+
+.model-hero[data-empty="true"] .model-empty {
+  gap: 2px;
+  padding: 10px;
+}
+
+.model-hero[data-empty="true"] .model-empty__title {
+  font-size: 13px;
+}
+
+.model-hero[data-empty="true"] .model-empty__text,
+.model-hero[data-empty="true"] .model-info__note {
+  display: none;
+}
+
+/* ---------------------------------------------------------------- 衣服详情 */
+
+.detail__stage {
+  border-color: var(--border);
+  background:
+    radial-gradient(
+      circle at 50% 84%,
+      rgba(255, 250, 235, 0.92) 0 8%,
+      rgba(214, 236, 255, 0.45) 30%,
+      transparent 62%
+    ),
+    radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.90) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 12%, rgba(255, 255, 255, 0.80) 0 1px, transparent 2px),
+    linear-gradient(180deg, #f4fbff, #e6f2fd);
+}
+
+.detail__section-title {
+  font-family: var(--head-font);
+  color: var(--heading-color);
+}
+
+.info-list,
+.angle-row {
+  background: rgba(255, 253, 248, 0.78);
+  border-color: var(--border);
+}
+
+.angle-row__thumb {
+  border: 1px solid var(--border);
+  background: #f4faff;
+}
+
+/* ---------------------------------------------------------------- 搭配编辑 / 上身展示 */
+
+.editor__drawer,
+.editor__panel,
+.worn-panel {
+  border-color: var(--border);
+}
+
+.editor-item__thumb,
+.trash-row__thumb {
+  border: 1px solid var(--border);
+  background: #f4faff;
+}
+
+.panel__title {
+  font-family: var(--head-font);
+  color: var(--heading-color);
+}
+
+/* 画布必须保持纯白，只给它换一圈蓝灰阴影 */
+.canvas {
+  background: #ffffff;
+  box-shadow:
+    0 18px 44px rgba(80, 120, 160, 0.16),
+    0 2px 6px rgba(80, 120, 160, 0.08);
+}
+
+/* 上身图展示台同样保持纯白，只换边框和阴影 */
+.worn-stage {
+  background: #ffffff;
+  border-color: var(--border);
+  box-shadow: 0 18px 40px rgba(80, 120, 160, 0.12);
+}
+
+.worn-empty__title {
+  color: var(--heading-color);
+}
+
+/* ---------------------------------------------------------------- 空搭配页的小人 */
+
+.mascot--outfit {
+  width: 120px;
+}
+
+.mascot--outfit-filter {
+  width: 112px;
+}
+
+/* ---------------------------------------------------------------- 回收站空状态的长椅宝宝 */
+
+.settings__section--trash {
+  position: relative;
+}
+
+.mascot--recycle {
+  position: absolute;
+  right: 16px;
+  bottom: 14px;
+  width: 92px;
+  z-index: 2;
+}
+
+/* ---------------------------------------------------------------- 小窗口 */
+
+@media (max-height: 760px) {
+  #outfit-empty,
+  #outfit-filter-empty {
+    gap: 10px;
+    padding: 24px;
+  }
+
+  #outfit-empty .empty__text {
+    display: none;
+  }
+
+  .model-hero[data-empty="true"] {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .model-hero[data-empty="true"] .model-stage {
+    width: 112px;
+  }
+
+  .mascot--outfit {
+    width: 100px;
+  }
+
+  .mascot--outfit-filter {
+    width: 92px;
+  }
+}
