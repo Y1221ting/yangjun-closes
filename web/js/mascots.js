@@ -84,6 +84,8 @@
   const lastPlayed = new Map();
   let bubble = null;
   let hideTimer = null;
+  let activeButton = null;
+  let scrollFrame = null;
 
   function ensureBubble() {
     if (bubble) return bubble;
@@ -98,20 +100,12 @@
   function hideBubble() {
     if (hideTimer) clearTimeout(hideTimer);
     hideTimer = null;
+    activeButton = null;
     if (bubble) bubble.classList.remove('is-visible');
   }
 
-  function showBubble(button, key) {
-    const lines = LINES[key] || [];
-    if (!lines.length) return;
-
+  function positionBubble(button) {
     const el = ensureBubble();
-    el.textContent = lines[Math.floor(Math.random() * lines.length)];
-    el.classList.remove('is-visible', 'mascot-bubble--below');
-    el.style.left = '0px';
-    el.style.top = '0px';
-    void el.offsetWidth;
-
     const rect = button.getBoundingClientRect();
     const width = el.offsetWidth;
     const height = el.offsetHeight;
@@ -136,13 +130,58 @@
     el.style.left = `${left}px`;
     el.style.top = `${top}px`;
     el.classList.toggle('mascot-bubble--below', below);
+  }
+
+  function showBubble(button, key) {
+    const lines = LINES[key] || [];
+    if (!lines.length) return;
+
+    const el = ensureBubble();
+    el.textContent = lines[Math.floor(Math.random() * lines.length)];
+    el.classList.remove('is-visible', 'mascot-bubble--below');
+    el.style.left = '0px';
+    el.style.top = '0px';
+    void el.offsetWidth;
+
+    activeButton = button;
+    positionBubble(button);
     requestAnimationFrame(() => el.classList.add('is-visible'));
 
     if (hideTimer) clearTimeout(hideTimer);
     hideTimer = window.setTimeout(() => {
       el.classList.remove('is-visible');
+      activeButton = null;
       hideTimer = null;
     }, 2600);
+  }
+
+  function isButtonOnScreen(button) {
+    if (!button || !button.isConnected) return false;
+    const rect = button.getBoundingClientRect();
+    return (
+      rect.bottom > 0 &&
+      rect.top < window.innerHeight &&
+      rect.right > 0 &&
+      rect.left < window.innerWidth
+    );
+  }
+
+  function repositionBubble() {
+    if (!bubble || !activeButton) return;
+    if (!bubble.classList.contains('is-visible')) return;
+    if (!isButtonOnScreen(activeButton)) {
+      hideBubble();
+      return;
+    }
+    positionBubble(activeButton);
+  }
+
+  function onScrollOrResize() {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = null;
+      repositionBubble();
+    });
   }
 
   function play(button) {
@@ -182,6 +221,9 @@
 
   function init() {
     document.addEventListener('click', onClick, true);
+    // 捕获所有内部滚动容器（衣帽柜、设置页、左右栏）
+    document.addEventListener('scroll', onScrollOrResize, true);
+    window.addEventListener('resize', onScrollOrResize);
   }
 
   App.mascots = { init };
