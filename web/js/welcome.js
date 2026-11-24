@@ -7,7 +7,7 @@
   'use strict';
 
   const KEY = 'yelena-welcome';
-  const MIN_SHOW = 1400;
+  const MIN_SHOW = 4000;
   const MAX_WAIT = 7000;
   const FADE = 720;
 
